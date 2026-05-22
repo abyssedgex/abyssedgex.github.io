@@ -1,18 +1,14 @@
 baseURL = 'https://lizorn.com/'
 locale = 'zh-CN'
-title = 'Lizorn'
-theme = 'PaperMod'
+title = '山海炼物'
+theme = 'minimal'
 
 [params]
-  description = 'Lizorn - 个人博客'
-  defaultTheme = 'auto'
-  ShowReadingTime = true
-  ShowShareButtons = false
-  ShowPostNavLinks = true
-
-[params.homeInfoParams]
-  Title = '你好，我是 Lizorn 👋'
-  Content = '欢迎来到我的个人博客。这里会记录技术、生活和思考。'
+  description = '山海炼物 — 炼物成器，格物致知'
+  subtitle = 'Refining Ideas, Crafting Reality'
+  author = 'Lizorn'
+  twitter = 'https://x.com/AbyssEdgeX'
+  wechat = ''
 
 [menu]
   [[menu.main]]
@@ -21,7 +17,7 @@ theme = 'PaperMod'
     url = '/about/'
     weight = 10
   [[menu.main]]
-    identifier = 'archives'
-    name = '归档'
-    url = '/archives/'
+    identifier = 'posts'
+    name = '文章'
+    url = '/posts/'
     weight = 20

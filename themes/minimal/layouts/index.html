@@ -1,0 +1,23 @@
+{{ define "main" }}
+<section class="hero">
+  <div class="hero-brand">
+    <h1 class="hero-title">山海炼物</h1>
+    <p class="hero-subtitle">{{ .Site.Params.subtitle }}</p>
+    <p class="hero-desc">{{ .Site.Params.description }}</p>
+  </div>
+  <div class="hero-links">
+    <a href="https://x.com/AbyssEdgeX" target="_blank" rel="noopener" class="social-link">𝕏 Twitter</a>
+    <span class="social-link wechat-link" id="wechat-link">微信 WeChat</span>
+    <a href="https://github.com/abyssedgex" target="_blank" rel="noopener" class="social-link">GitHub</a>
+  </div>
+  <div class="wechat-qr" id="wechat-qr" style="display:none;">
+    <p>微信二维码（待上传）</p>
+  </div>
+</section>
+<script>
+document.getElementById('wechat-link')?.addEventListener('click', function(){
+  var qr = document.getElementById('wechat-qr');
+  qr.style.display = qr.style.display === 'none' ? 'block' : 'none';
+});
+</script>
+{{ end }}

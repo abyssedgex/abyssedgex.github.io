@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
+  <meta name="description" content="{{ .Params.description | default .Site.Params.description }}">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚒️</text></svg>">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <nav class="nav">
+        <a class="site-title" href="{{ .Site.BaseURL }}">{{ .Site.Title }}</a>
+        <div class="nav-links">
+          {{ range .Site.Menus.main }}
+            <a href="{{ .URL }}">{{ .Name }}</a>
+          {{ end }}
+        </div>
+      </nav>
+    </header>
+    <main class="main">
+      {{ block "main" . }}{{ end }}
+    </main>
+    <footer class="footer">
+      <p>&copy; {{ now.Format "2006" }} {{ .Site.Params.author }}. Powered by Hugo.</p>
+    </footer>
+  </div>
+</body>
+</html>
