@@ -1,0 +1,27 @@
+baseURL = 'https://lizorn.com/'
+locale = 'zh-CN'
+title = 'Lizorn'
+theme = 'PaperMod'
+
+[params]
+  description = 'Lizorn - 个人博客'
+  defaultTheme = 'auto'
+  ShowReadingTime = true
+  ShowShareButtons = false
+  ShowPostNavLinks = true
+
+[params.homeInfoParams]
+  Title = '你好，我是 Lizorn 👋'
+  Content = '欢迎来到我的个人博客。这里会记录技术、生活和思考。'
+
+[menu]
+  [[menu.main]]
+    identifier = 'about'
+    name = '关于'
+    url = '/about/'
+    weight = 10
+  [[menu.main]]
+    identifier = 'archives'
+    name = '归档'
+    url = '/archives/'
+    weight = 20
