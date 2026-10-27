@@ -36,6 +36,11 @@ theme = 'minimal'
   #   url = '/about/'
   #   weight = 10
   [[menu.main]]
+    identifier = 'courses'
+    name = '课程'
+    url = '/courses/'
+    weight = 15
+  [[menu.main]]
     identifier = 'posts'
     name = '文章'
     url = '/posts/'

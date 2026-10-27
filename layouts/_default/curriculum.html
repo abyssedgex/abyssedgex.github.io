@@ -1,0 +1,308 @@
+{{ define "main" }}
+{{ $d := hugo.Data.curriculum }}
+{{ $jump := slice
+  (dict "id" "knowledge" "name" "知识架构")
+  (dict "id" "tracks" "name" "双轨路径")
+  (dict "id" "domains" "name" "工业场景")
+  (dict "id" "levels" "name" "四阶成长")
+  (dict "id" "capstones" "name" "综合实战")
+  (dict "id" "assessment" "name" "评估认证")
+  (dict "id" "references" "name" "参考框架")
+}}
+<div class="curr" data-pagefind-body>
+
+  <header class="curr-hero">
+    <p class="curr-kicker">{{ $d.hero.kicker }}</p>
+    <h1 class="curr-title">{{ $d.hero.title }}</h1>
+    <p class="curr-subtitle">{{ $d.hero.subtitle }}</p>
+    <p class="curr-desc">{{ $d.hero.description }}</p>
+
+    <div class="curr-stats">
+      {{ range $d.hero.stats }}
+      <a class="curr-stat" href="#{{ .anchor }}">
+        <span class="curr-stat-value">{{ .value }}</span>
+        <span class="curr-stat-label">{{ .label }}</span>
+      </a>
+      {{ end }}
+    </div>
+
+    <div class="curr-formula">
+      <div class="curr-formula-row"><span>内核</span>知识架构 · 六根支柱，贯穿始终</div>
+      <div class="curr-formula-row"><span>路径</span>工程底座 × 场景应用，共用一套底座</div>
+      <div class="curr-formula-row"><span>阶梯</span>认知 → 实践 → 生产 → 规模化，以证据结业</div>
+    </div>
+
+    <nav class="curr-jump" aria-label="课程体系导航">
+      {{ range $jump }}<a href="#{{ .id }}">{{ .name }}</a>{{ end }}
+    </nav>
+  </header>
+
+  <section class="curr-section" id="principles">
+    <div class="curr-section-head">
+      <p class="curr-kicker">❯ principles</p>
+      <h2>设计原则</h2>
+      <p class="curr-lead">课程怎么排、工具怎么选、作业怎么判，都服从这六条原则。</p>
+    </div>
+    <div class="curr-principles">
+      {{ range $d.principles }}
+      <article class="curr-principle">
+        <h3>{{ .title }}</h3>
+        <p>{{ .desc }}</p>
+      </article>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="curr-section" id="knowledge">
+    <div class="curr-section-head">
+      <p class="curr-kicker">❯ cat know-how/*.md</p>
+      <h2>{{ $d.knowledge.title }}</h2>
+      <p class="curr-lead">{{ $d.knowledge.lead }}</p>
+    </div>
+    <div class="ka-grid">
+      {{ range $d.knowledge.pillars }}
+      <article class="ka-card">
+        <div class="ka-top">
+          <span class="ka-id">{{ .id }}</span>
+          <span class="ka-en">{{ .en }}</span>
+        </div>
+        <h3 class="ka-name">{{ .name }}</h3>
+        <p class="ka-question">「{{ .question }}」</p>
+        <p class="ka-desc">{{ .desc }}</p>
+        <div class="ka-tags">
+          {{ range .practices }}<span>{{ . }}</span>{{ end }}
+        </div>
+      </article>
+      {{ end }}
+    </div>
+    <p class="curr-note">{{ $d.knowledge.note }}</p>
+  </section>
+
+  <section class="curr-section" id="capabilities">
+    <div class="curr-section-head">
+      <p class="curr-kicker">❯ capability map</p>
+      <h2>{{ $d.capabilities.title }}</h2>
+      <p class="curr-lead">{{ $d.capabilities.lead }}</p>
+    </div>
+    <div class="cap-grid">
+      {{ range $d.capabilities.items }}
+      <article class="cap-card">
+        <h3>{{ .name }}</h3>
+        <span class="cap-en">{{ .en }}</span>
+        <p>{{ .desc }}</p>
+      </article>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="curr-section" id="core">
+    <div class="curr-section-head">
+      <p class="curr-kicker">❯ shared core</p>
+      <h2>{{ $d.shared_core.title }}</h2>
+      <p class="curr-lead">{{ $d.shared_core.lead }}</p>
+    </div>
+    <div class="core-grid">
+      {{ range $d.shared_core.items }}
+      <article class="core-item">
+        <span class="core-id">{{ .id }}</span>
+        <div>
+          <h3>{{ .name }}</h3>
+          <p>{{ .desc }}</p>
+        </div>
+      </article>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="curr-section" id="tracks">
+    <div class="curr-section-head">
+      <p class="curr-kicker">❯ choose a track</p>
+      <h2>{{ $d.tracks_intro.title }}</h2>
+      <p class="curr-lead">{{ $d.tracks_intro.lead }}</p>
+    </div>
+    <div class="track-grid">
+      {{ range $d.tracks }}
+      <article class="track-card">
+        <p class="track-en">{{ .en }}</p>
+        <h3>{{ .name }}</h3>
+        <p class="track-tagline">{{ .tagline }}</p>
+        <div class="track-meta">
+          <p><strong>适合</strong>{{ .audience }}</p>
+          <p><strong>目标</strong>{{ .goal }}</p>
+          <p><strong>出口</strong>{{ .outcome }}</p>
+        </div>
+        <div class="track-modules">
+          {{ range .modules }}
+          <div class="track-module">
+            <div class="tm-head">
+              <span class="tm-id">{{ .id }}</span>
+              <span class="tm-meta">
+                <span class="tm-ka">{{ .ka }}</span>
+                <span class="tm-level">{{ .level }}</span>
+              </span>
+            </div>
+            <h4>{{ .name }}</h4>
+            <p>{{ .desc }}</p>
+            <p class="tm-artifact">产出 · {{ .artifact }}</p>
+          </div>
+          {{ end }}
+        </div>
+      </article>
+      {{ end }}
+    </div>
+    <p class="track-converge">{{ $d.tracks_intro.note }}</p>
+  </section>
+
+  <section class="curr-section" id="domains">
+    <div class="curr-section-head">
+      <p class="curr-kicker">❯ industrial scenarios</p>
+      <h2>{{ $d.domains.title }}</h2>
+      <p class="curr-lead">{{ $d.domains.lead }}</p>
+    </div>
+    <div class="domain-grid">
+      {{ range $d.domains.items }}
+      <article class="domain-card">
+        <h3>{{ .name }}</h3>
+        <div class="domain-row"><span>数据</span><p>{{ .data }}</p></div>
+        <div class="domain-row"><span>方法</span><p>{{ .method }}</p></div>
+        <div class="domain-row"><span>难点</span><p>{{ .difficulty }}</p></div>
+      </article>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="curr-section" id="levels">
+    <div class="curr-section-head">
+      <p class="curr-kicker">❯ progression</p>
+      <h2>{{ $d.levels.title }}</h2>
+      <p class="curr-lead">{{ $d.levels.lead }}</p>
+    </div>
+    <div class="level-list">
+      {{ range $d.levels.items }}
+      <div class="level-item">
+        <div class="level-marker">{{ .id }}</div>
+        <div class="level-body">
+          <div class="level-head">
+            <h3>{{ .name }}</h3>
+            <span>{{ .duration }}</span>
+          </div>
+          <p class="level-aud">{{ .audience }}</p>
+          <ul class="level-focus">
+            {{ range .focus }}<li>{{ . }}</li>{{ end }}
+          </ul>
+          <p class="level-evidence"><strong>结业证据</strong>{{ .evidence }}</p>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="curr-section" id="capstones">
+    <div class="curr-section-head">
+      <p class="curr-kicker">❯ build something real</p>
+      <h2>{{ $d.capstones.title }}</h2>
+      <p class="curr-lead">{{ $d.capstones.lead }}</p>
+    </div>
+    <div class="capstone-grid">
+      {{ range $d.capstones.items }}
+      <article class="capstone">
+        <div class="capstone-top">
+          <span class="capstone-id">{{ .id }}</span>
+          <span class="capstone-tracks">{{ .tracks }}</span>
+        </div>
+        <h3>{{ .name }}</h3>
+        <p>{{ .desc }}</p>
+        <p class="capstone-evidence">验收 · {{ .evidence }}</p>
+      </article>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="curr-section" id="assessment">
+    <div class="curr-section-head">
+      <p class="curr-kicker">❯ evidence over certificates</p>
+      <h2>{{ $d.assessment.title }}</h2>
+      <p class="curr-lead">{{ $d.assessment.lead }}</p>
+    </div>
+    <div class="assess-grid">
+      {{ range $d.assessment.items }}
+      <article class="assess-card">
+        <span class="assess-weight">{{ .weight }}</span>
+        <h3>{{ .name }}</h3>
+        <p>{{ .desc }}</p>
+      </article>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="curr-section" id="references">
+    <div class="curr-section-head">
+      <p class="curr-kicker">❯ references</p>
+      <h2>{{ $d.references.title }}</h2>
+      <p class="curr-lead">{{ $d.references.lead }}</p>
+    </div>
+    <div class="ref-list">
+      {{ range $d.references.items }}
+      <article class="ref-item">
+        <div class="ref-head">
+          <h3>{{ if .url }}<a href="{{ .url }}" target="_blank" rel="noopener">{{ .name }}</a>{{ else }}{{ .name }}{{ end }}</h3>
+          <span>{{ .detail }}</span>
+        </div>
+        <dl class="ref-meta">
+          <div><dt>强项</dt><dd>{{ .strength }}</dd></div>
+          <div><dt>缺口</dt><dd>{{ .gap }}</dd></div>
+          <div><dt>吸收</dt><dd>{{ .takeaway }}</dd></div>
+        </dl>
+      </article>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="curr-section" id="tools">
+    <div class="curr-section-head">
+      <p class="curr-kicker">❯ tools change</p>
+      <h2>{{ $d.tools.title }}</h2>
+      <p class="curr-lead">{{ $d.tools.lead }}</p>
+    </div>
+    <div class="tool-grid">
+      {{ range $d.tools.groups }}
+      <article class="tool-group">
+        <h3>{{ .name }}</h3>
+        <div class="tool-tags">
+          {{ range .items }}<span>{{ . }}</span>{{ end }}
+        </div>
+      </article>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="curr-section" id="audience">
+    <div class="curr-section-head">
+      <p class="curr-kicker">❯ who is this for</p>
+      <h2>适合谁，不适合谁</h2>
+      <p class="curr-lead">把边界说清楚，比把课程说得万能更有用。</p>
+    </div>
+    <div class="audience-grid">
+      <article class="audience-card fit">
+        <h3>适合</h3>
+        <ul>
+          {{ range $d.audience.fit }}<li>{{ . }}</li>{{ end }}
+        </ul>
+      </article>
+      <article class="audience-card unfit">
+        <h3>不适合</h3>
+        <ul>
+          {{ range $d.audience.unfit }}<li>{{ . }}</li>{{ end }}
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="curr-cta">
+    <h2>{{ $d.cta.title }}</h2>
+    <p>{{ $d.cta.desc }}</p>
+    <a href="mailto:{{ $d.cta.email }}">写信交流 →</a>
+  </section>
+
+</div>
+{{ end }}
