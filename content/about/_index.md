@@ -2,7 +2,7 @@
 title: '关于'
 description: '关于山海炼物与站长'
 date: 2026-05-22T12:00:00+08:00
-draft: false
+draft: true  # 暂时隐藏，恢复时改回 false 并取消 hugo.toml 菜单注释
 ---
 
 **山海炼物** — 炼物成器，格物致知。

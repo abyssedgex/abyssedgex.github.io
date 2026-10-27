@@ -1,6 +1,120 @@
+{{- $title := .Title -}}
+{{- if .IsHome -}}
+  {{- $title = .Site.Title -}}
+{{- else if eq .Kind "404" -}}
+  {{- $title = printf "页面不存在 — %s" .Site.Title -}}
+{{- else if not $title -}}
+  {{- $title = printf "页面不存在 — %s" .Site.Title -}}
+{{- else -}}
+  {{- $title = printf "%s — %s" .Title .Site.Title -}}
+{{- end -}}
+
+{{- $desc := .Params.description | default .Description -}}
+{{- if not $desc -}}
+  {{- if .IsPage -}}
+    {{- $desc = .Summary | plainify -}}
+  {{- else -}}
+    {{- $desc = .Site.Params.description -}}
+  {{- end -}}
+{{- end -}}
+{{- $desc = $desc | plainify | replaceRE `\s+` " " | strings.TrimSpace | truncate 160 -}}
+
+{{- $image := .Site.Params.ogImage | absURL -}}
+{{- with .Params.images -}}
+  {{- $image = index . 0 | absURL -}}
+{{- end -}}
+{{- with .Params.image -}}
+  {{- $image = . | absURL -}}
+{{- end -}}
+
+{{- $lastmod := .Lastmod -}}
+{{- if $lastmod.IsZero -}}
+  {{- $lastmod = .Date -}}
+{{- end -}}
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
-<meta name="description" content="{{ .Params.description | default .Site.Params.description }}">
+<title>{{ $title }}</title>
+<meta name="description" content="{{ $desc }}">
+<meta name="author" content="{{ .Site.Params.author }}">
+{{ if or .Params.noindex (eq .Kind "404") }}
+<meta name="robots" content="noindex, follow">
+{{ else }}
+<meta name="robots" content="index, follow, max-image-preview:large">
+{{ end }}
+{{ if ne .Kind "404" }}<link rel="canonical" href="{{ .Permalink }}">{{ end }}
+
+<!-- Open Graph -->
+<meta property="og:site_name" content="{{ .Site.Title }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $desc }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="{{ $image }}">
+{{ if .IsPage }}
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05-07:00" }}">
+<meta property="article:modified_time" content="{{ $lastmod.Format "2006-01-02T15:04:05-07:00" }}">
+{{ range .Params.tags }}<meta property="article:tag" content="{{ . }}">
+{{ end }}
+{{ end }}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="{{ if $image }}summary_large_image{{ else }}summary{{ end }}">
+<meta name="twitter:title" content="{{ $title }}">
+<meta name="twitter:description" content="{{ $desc }}">
+<meta name="twitter:image" content="{{ $image }}">
+{{ with .Site.Params.twitterHandle }}
+<meta name="twitter:site" content="{{ . }}">
+<meta name="twitter:creator" content="{{ . }}">
+{{ end }}
+
 <link rel="stylesheet" href="/css/style.css">
+{{ if eq .Layout "search" }}<link rel="stylesheet" href="/pagefind/pagefind-ui.css">{{ end }}
 <link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" href="{{ "index.xml" | absURL }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#1d1d1d">
+
+{{- if and (not .Params.noindex) (ne .Kind "404") -}}
+{{- $lang := .Site.Language.Locale -}}
+{{- $sameAs := slice -}}
+{{- with .Site.Params.twitter -}}{{- $sameAs = $sameAs | append . -}}{{- end -}}
+{{- with .Site.Params.github -}}{{- $sameAs = $sameAs | append . -}}{{- end -}}
+{{- $author := dict "@type" "Person" "name" .Site.Params.author "alternateName" "Zorn Li" "url" .Site.BaseURL "sameAs" $sameAs -}}
+{{- with .Site.Params.email -}}{{- $author = merge $author (dict "email" .) -}}{{- end -}}
+{{- $website := dict "@type" "WebSite" "@id" (printf "%s#website" .Site.BaseURL) "url" .Site.BaseURL "name" .Site.Title "description" .Site.Params.description "inLanguage" $lang -}}
+{{- $schema := dict "@context" "https://schema.org" -}}
+{{- if .IsHome -}}
+  {{- $schema = merge $schema (dict "@graph" (slice $website $author)) -}}
+{{- else if .IsPage -}}
+  {{- $post := dict
+      "@type" "BlogPosting"
+      "@id" (printf "%s#article" .Permalink)
+      "headline" .Title
+      "description" $desc
+      "datePublished" (.Date.Format "2006-01-02T15:04:05-07:00")
+      "dateModified" ($lastmod.Format "2006-01-02T15:04:05-07:00")
+      "author" $author
+      "publisher" $author
+      "image" (slice $image)
+      "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)
+      "inLanguage" $lang
+      "isPartOf" $website
+  -}}
+  {{- with .Params.tags -}}{{- $post = merge $post (dict "keywords" (delimit . ", ")) -}}{{- end -}}
+  {{- $crumbs := slice
+      (dict "@type" "ListItem" "position" 1 "name" "首页" "item" .Site.BaseURL)
+      (dict "@type" "ListItem" "position" 2 "name" "文章" "item" ("posts/" | absURL))
+      (dict "@type" "ListItem" "position" 3 "name" .Title "item" .Permalink)
+  -}}
+  {{- $breadcrumb := dict "@type" "BreadcrumbList" "itemListElement" $crumbs -}}
+  {{- $schema = merge $schema (dict "@graph" (slice $post $breadcrumb)) -}}
+{{- else -}}
+  {{- $pageSchema := dict "@type" "CollectionPage" "@id" .Permalink "url" .Permalink "name" .Title "description" $desc "inLanguage" $lang "isPartOf" $website -}}
+  {{- $schema = merge $schema (dict "@graph" (slice $pageSchema)) -}}
+{{- end }}
+<script type="application/ld+json">{{ $schema | jsonify | safeJS }}</script>
+{{- end -}}

@@ -1,0 +1,20 @@
+# 默认允许普通搜索引擎与 AI 爬虫抓取
+User-agent: *
+Allow: /
+Disallow: /search/
+Disallow: /pagefind/
+
+# 如果不想让内容被用于模型训练，取消下面整段注释：
+# User-agent: GPTBot
+# User-agent: ClaudeBot
+# User-agent: Google-Extended
+# User-agent: CCBot
+# User-agent: Bytespider
+# User-agent: Meta-ExternalAgent
+# User-agent: Applebot-Extended
+# Disallow: /
+
+# LLM 索引
+# {{ "llms.txt" | absURL }}
+
+Sitemap: {{ "sitemap.xml" | absURL }}

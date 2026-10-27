@@ -1,0 +1,24 @@
+# {{ .Site.Title }}
+
+> {{ .Site.Params.description }}
+
+- 作者：{{ .Site.Params.author }}
+- 站点：{{ .Site.BaseURL }}
+- 语言：中文（zh-CN）
+- 联系：{{ .Site.Params.email }}
+
+## 核心页面
+
+- [文章]({{ "posts/" | absURL }})：全部文章列表
+- [Talks]({{ "talks/" | absURL }})：技术分享与演讲
+- [项目]({{ "projects/" | absURL }})：开源项目与作品
+
+## 文章
+
+{{ range (where .Site.RegularPages "Section" "posts").ByDate.Reverse -}}
+- [{{ .Title }}]({{ .Permalink }})：{{ with .Params.description }}{{ . | replaceRE `\s+` " " | strings.TrimSpace }}{{ else }}{{ .Summary | plainify | replaceRE `\s+` " " | strings.TrimSpace | truncate 120 }}{{ end }}（{{ .Date.Format "2006-01-02" }}）
+{{ end }}
+## 订阅
+
+- [RSS]({{ "index.xml" | absURL }})
+- [Sitemap]({{ "sitemap.xml" | absURL }})

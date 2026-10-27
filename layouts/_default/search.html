@@ -1,0 +1,44 @@
+{{ define "main" }}
+<section class="list search-page">
+  <p class="section-kicker">❯ grep</p>
+  <h1 class="list-title">{{ .Title }}</h1>
+  <div id="search" class="search-box">
+    <p class="search-fallback">搜索索引尚未生成。本地预览请先运行 <code>npx pagefind --site public</code>。</p>
+  </div>
+</section>
+<style>
+  .search-box { max-width: 720px; margin-top: 2rem; }
+  .search-fallback { color: var(--fg-dim); font-size: 0.9rem; }
+  .pagefind-ui {
+    --pagefind-ui-primary: #10b981;
+    --pagefind-ui-text: #ddd;
+    --pagefind-ui-background: #1d1d1d;
+    --pagefind-ui-border: #333;
+    --pagefind-ui-tag: #252525;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 4px;
+    --pagefind-ui-font: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Consolas', 'Noto Sans SC', monospace;
+  }
+</style>
+<script src="/pagefind/pagefind-ui.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    var el = document.getElementById('search');
+    if (typeof PagefindUI === 'undefined') return;
+    el.innerHTML = '';
+    new PagefindUI({
+      element: '#search',
+      showSubResults: true,
+      translations: {
+        placeholder: '搜索文章…',
+        search_label: '搜索',
+        zero_results: '没有找到与 [SEARCH_TERM] 相关的内容',
+        many_results: '[COUNT] 条结果',
+        one_result: '[COUNT] 条结果',
+        clear_search: '清除',
+        load_more: '加载更多'
+      }
+    });
+  });
+</script>
+{{ end }}

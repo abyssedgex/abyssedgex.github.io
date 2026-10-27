@@ -1,4 +1,6 @@
 baseURL = 'https://lizorn.com/'
+hasCJKLanguage = true
+enableRobotsTXT = true
 locale = 'zh-CN'
 title = '山海炼物'
 theme = 'minimal'
@@ -8,20 +10,41 @@ theme = 'minimal'
   subtitle = '科技 · 金融 · 艺术 综合细胞体'
   motto = '知而行之'
   author = 'Lizorn'
+  email = 'mail@lizorn.com'
   twitter = 'https://x.com/AbyssEdgeX'
+  twitterHandle = '@AbyssEdgeX'
+  github = 'https://github.com/abyssedgex'
+  ogImage = '/logo.png'
   wechat = ''
 
+  # giscus 评论：在 https://giscus.app 填入仓库后，把 repoId / categoryId 抄到这里
+  # 前提：GitHub 仓库已开启 Discussions，并安装了 giscus App
+  [params.giscus]
+    repo = 'abyssedgex/abyssedgex.github.io'
+    repoId = 'R_kgDOSkF7kw'
+    category = 'Announcements'
+    categoryId = 'DIC_kwDOSkF7k84DJv0o'
+    mapping = 'pathname'
+    lang = 'zh-CN'
+    theme = 'dark'
+
 [menu]
-  [[menu.main]]
-    identifier = 'about'
-    name = '关于'
-    url = '/about/'
-    weight = 10
+  # 「关于」暂时隐藏，恢复时取消下面注释，并把 content/about/_index.md 的 draft 改为 false
+  # [[menu.main]]
+  #   identifier = 'about'
+  #   name = '关于'
+  #   url = '/about/'
+  #   weight = 10
   [[menu.main]]
     identifier = 'posts'
     name = '文章'
     url = '/posts/'
     weight = 20
+  [[menu.main]]
+    identifier = 'search'
+    name = '搜索'
+    url = '/search/'
+    weight = 25
   [[menu.main]]
     identifier = 'talks'
     name = 'Talks'
@@ -32,6 +55,15 @@ theme = 'minimal'
     name = '项目'
     url = '/projects/'
     weight = 40
+
+[outputs]
+  home = ['HTML', 'RSS', 'LLMS']
+
+[outputFormats.LLMS]
+  mediaType = 'text/plain'
+  baseName = 'llms'
+  isPlainText = true
+  notAlternative = true
 
 [markup]
   [markup.goldmark]

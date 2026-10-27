@@ -1,16 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.Language.Lang }}">
+<html lang="{{ .Site.Language.Locale }}">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
-  <meta name="description" content="{{ .Params.description | default .Site.Params.description }}">
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="icon" type="image/svg+xml" href="/logo.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  {{ partial "head.html" . }}
 </head>
-<body>
+<body{{ if or .Params.pagefindIgnore (eq .Kind "404") }} data-pagefind-ignore{{ end }}>
   <div class="container">
     <header class="header">
       <nav class="nav">
@@ -25,7 +18,7 @@
         </span>
       </nav>
     </header>
-    <main class="main">
+    <main class="main"{{ if and .IsPage (not .Params.pagefindIgnore) }} data-pagefind-body{{ end }}>
       {{ block "main" . }}{{ end }}
     </main>
     <footer class="footer">
