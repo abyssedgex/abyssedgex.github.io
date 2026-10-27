@@ -21,3 +21,18 @@ theme = 'minimal'
     name = '文章'
     url = '/posts/'
     weight = 20
+  [[menu.main]]
+    identifier = 'talks'
+    name = 'Talks'
+    url = '/talks/'
+    weight = 30
+  [[menu.main]]
+    identifier = 'projects'
+    name = '项目'
+    url = '/projects/'
+    weight = 40
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
