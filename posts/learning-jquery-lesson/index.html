@@ -1,0 +1,553 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>jQuery基础 — 山海炼物</title><meta name=description content="山海炼物 — 炼物成器，格物致知"><link rel=stylesheet href=/css/style.css><link rel=icon href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚒️</text></svg>"><link rel=preconnect href=https://fonts.googleapis.com><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel=stylesheet></head><body><div class=container><header class=header><nav class=nav><span class=nav-prompt>❯</span>
+<span class=nav-sep>~</span>
+<a class=site-title href=https://lizorn.com/>山海炼物</a>
+<span class=nav-links><a href=/about/>关于</a>
+<a href=/posts/>文章</a>
+<a href=/talks/>Talks</a>
+<a href=/projects/>项目</a></span></nav></header><main class=main><article class=post><h1 class=post-title>jQuery基础</h1><time class=post-date>2016-03-10</time><div class=post-content><h2 id=选择元素>选择元素</h2><h3 id=sample>sample</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#f92672>&lt;</span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>ready</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#selected-plays &gt; li&#39;</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;horizontal&#39;</span>); <span style=color:#75715e>// Find First top li elements ,add css horizontal
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#selected-plays li:not(.horizontal)&#39;</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;sub-level&#39;</span>); <span style=color:#75715e>//Find all li elements without class horizontal
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;a[href^=&#34;mailto:&#34;]&#39;</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;mailto&#39;</span>);<span style=color:#75715e>//Find anchor element that href begin with &#34;mailto&#34;
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;a[href$=&#34;.pdf&#34;]&#39;</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;pdflink&#39;</span>);<span style=color:#75715e>//href end with &#34;.pdf&#34;
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;a[href^=&#34;http&#34;][href*=&#34;henry&#34;]&#39;</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;henrylink&#39;</span>);<span style=color:#75715e>//href begin with &#34;http&#34; and has &#34;henry&#34;
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;a&#39;</span>).<span style=color:#a6e22e>filter</span>(<span style=color:#66d9ef>function</span>() {  <span style=color:#75715e>//filter the hostname
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>hostname</span> <span style=color:#f92672>&amp;&amp;</span> <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>hostname</span> <span style=color:#f92672>!=</span> <span style=color:#a6e22e>location</span>.<span style=color:#a6e22e>hostname</span>;
+</span></span><span style=display:flex><span>  }).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;external&#39;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;tr:nth-child(odd)&#39;</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;alt&#39;</span>);  <span style=color:#75715e>//select all odd child by current parent,start with 1.
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;td:contains(Henry)&#39;</span>) <span style=color:#75715e>// Find every cell containing &#34;Henry&#34;
+</span></span></span><span style=display:flex><span>    .<span style=color:#a6e22e>parent</span>() <span style=color:#75715e>// Select its parent
+</span></span></span><span style=display:flex><span>    .<span style=color:#a6e22e>find</span>(<span style=color:#e6db74>&#39;td:eq(1)&#39;</span>) <span style=color:#75715e>// Find the 2nd descendant cell
+</span></span></span><span style=display:flex><span>    .<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;highlight&#39;</span>) <span style=color:#75715e>// Add the &#34;highlight&#34; class
+</span></span></span><span style=display:flex><span>    .<span style=color:#a6e22e>end</span>() <span style=color:#75715e>// Return to the parent of the cell containing &#34;Henry&#34;
+</span></span></span><span style=display:flex><span>    .<span style=color:#a6e22e>find</span>(<span style=color:#e6db74>&#39;td:eq(2)&#39;</span>) <span style=color:#75715e>// Find the 3rd descendant cell
+</span></span></span><span style=display:flex><span>    .<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;highlight&#39;</span>); <span style=color:#75715e>// Add the &#34;highlight&#34; class
+</span></span></span><span style=display:flex><span>});
+</span></span></code></pre></div><h3 id=给位于嵌套列表第二个层次的所有li元素添加special类>给位于嵌套列表第二个层次的所有<code>&lt;li></code>元素添加special类；</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>ready</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#selected-plays li li&#39;</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;special&#39;</span>);
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><h3 id=给位于表格第三列的所有单元格添加year类>给位于表格第三列的所有单元格添加year类；</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>ready</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;td:nth-child(3)&#39;</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#34;year&#34;</span>)
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><h3 id=为表格中包含文本tragedy的第一行添加special类>为表格中包含文本Tragedy的第一行添加special类；</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>ready</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;td:contains(Tragedy)&#39;</span>).<span style=color:#a6e22e>first</span>().<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;special&#39;</span>);
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><h3 id=选择包含链接a的所有列表项li元素为每个选中的列表项的同辈列表项元素添加afterlink类>选择包含链接（<code>&lt;a></code>）的所有列表项（<code>&lt;li></code>元素），为每个选中的列表项的同辈列表项元素添加afterlink类；</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>ready</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&lt;</span><span style=color:#a6e22e>span</span> <span style=color:#a6e22e>style</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;font-family: monospace; white-space: pre; background-color: rgb(240, 240, 240);&#34;</span><span style=color:#f92672>&gt;</span><span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;li a&#39;</span>).<span style=color:#a6e22e>parent</span>().<span style=color:#a6e22e>nextAll</span>().<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;afterlink&#39;</span>)<span style=color:#f92672>&lt;</span><span style=color:#960050;background-color:#1e0010>/span&gt;;</span>
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><h3 id=为与pdf链接最接近的祖先元素>为与.pdf链接最接近的祖先元素</h3><p>添加tragedy类</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>ready</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;a[href$=&#34;.pdf&#34;]&#39;</span>).<span style=color:#a6e22e>closest</span>(<span style=color:#e6db74>&#39;ul&#39;</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;Tragedy&#39;</span>);;
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><h2 id=事件>事件</h2><p>tips:事件冒泡</p><p>1.特定元素响应事件需要停止事件传播[.stopPropagation()]
+2.部分事件处理对象，如锚元素（），需要阻止默认操作[.preventDefault()]
+3.利用事件冒泡实现事件委托</p><h3 id=分析和练习>分析和练习</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>ready</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*Enable hover effect on the style switcher*/</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#switcher&#39;</span>).<span style=color:#a6e22e>hover</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;hover&#39;</span>);
+</span></span><span style=display:flex><span>  }, <span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>removeClass</span>(<span style=color:#e6db74>&#39;hover&#39;</span>);
+</span></span><span style=display:flex><span>  });<span style=color:#75715e>//绑定悬停效果，在鼠标enters和leaves元素时启用对应样式
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*Allow the style switcher to expand and collapse.*/</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>toggleSwitcher</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>$</span>(<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>target</span>).<span style=color:#a6e22e>is</span>(<span style=color:#e6db74>&#39;button&#39;</span>)) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#switcher button&#39;</span>).<span style=color:#a6e22e>toggleClass</span>(<span style=color:#e6db74>&#39;hidden&#39;</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  };<span style=color:#75715e>//是否包含button标签，toggleClass根据类是否存在而添加或删除类
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#switcher&#39;</span>).<span style=color:#a6e22e>on</span>(<span style=color:#e6db74>&#39;click&#39;</span>, <span style=color:#a6e22e>toggleSwitcher</span>);<span style=color:#75715e>//注册click事件
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/* Simulate a click so we start in a collaped state.*/</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#switcher&#39;</span>).<span style=color:#a6e22e>click</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/* The setBodyClass() function changes the page style.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>     The style switcher state is also updated.*/</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>setBodyClass</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>className</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;body&#39;</span>).<span style=color:#a6e22e>removeClass</span>().<span style=color:#a6e22e>addClass</span>(<span style=color:#a6e22e>className</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#switcher button&#39;</span>).<span style=color:#a6e22e>removeClass</span>(<span style=color:#e6db74>&#39;selected&#39;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#switcher-&#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>className</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;selected&#39;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#switcher&#39;</span>).<span style=color:#a6e22e>off</span>(<span style=color:#e6db74>&#39;click&#39;</span>, <span style=color:#a6e22e>toggleSwitcher</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>className</span> <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;default&#39;</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#switcher&#39;</span>).<span style=color:#a6e22e>on</span>(<span style=color:#e6db74>&#39;click&#39;</span>, <span style=color:#a6e22e>toggleSwitcher</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  };
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*begin with the switcher-default button &#34;selected&#34;*/</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#switcher-default&#39;</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;selected&#39;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*Map key codes to their corresponding buttons to click*/</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>triggers</span> <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>D</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;default&#39;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>N</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;narrow&#39;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>L</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;large&#39;</span>
+</span></span><span style=display:flex><span>  };
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// Call setBodyClass() when a button is clicked.
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#switcher&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>$</span>(<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>target</span>).<span style=color:#a6e22e>is</span>(<span style=color:#e6db74>&#39;button&#39;</span>)) {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>bodyClass</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>target</span>.<span style=color:#a6e22e>id</span>.<span style=color:#a6e22e>split</span>(<span style=color:#e6db74>&#39;-&#39;</span>)[<span style=color:#ae81ff>1</span>];
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>setBodyClass</span>(<span style=color:#a6e22e>bodyClass</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// Call setBodyClass() when a key is pressed.
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>keyup</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>key</span> <span style=color:#f92672>=</span> String.<span style=color:#a6e22e>fromCharCode</span>(<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>which</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>key</span> <span style=color:#66d9ef>in</span> <span style=color:#a6e22e>triggers</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>setBodyClass</span>(<span style=color:#a6e22e>triggers</span>[<span style=color:#a6e22e>key</span>]);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*Enable hover effect on the style switcher*/</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#header div&#39;</span>).<span style=color:#a6e22e>hover</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;hover&#39;</span>);
+</span></span><span style=display:flex><span>  }, <span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>removeClass</span>(<span style=color:#e6db74>&#39;hover&#39;</span>);
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>//(1) 在Charles Dickens被单击时，给它应用selected样式
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#header div&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#header div&#39;</span>).<span style=color:#a6e22e>removeClass</span>().<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;selected&#39;</span>);
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>//(2) 双击章标题（&lt;h3 class=&#34;chapter-title&#34;&gt;）时，切换章文本的可见性
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;div.chapter&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>$</span>(<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>target</span>).<span style=color:#a6e22e>is</span>(<span style=color:#e6db74>&#39;h3&#39;</span>)) {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>$</span>(<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>target</span>).<span style=color:#a6e22e>parent</span>().<span style=color:#a6e22e>find</span>(<span style=color:#e6db74>&#39;p&#39;</span>).<span style=color:#a6e22e>toggleClass</span>(<span style=color:#e6db74>&#39;hidden&#39;</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>  <span style=color:#75715e>//(3) 用户按下向右方向键时，切换到下一个body类
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>keyup</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>keyCode</span> <span style=color:#f92672>==</span> <span style=color:#ae81ff>39</span>)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>curBodyClass</span><span style=color:#f92672>=</span><span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;body&#39;</span>).<span style=color:#a6e22e>attr</span>(<span style=color:#e6db74>&#39;class&#39;</span>);
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>switch</span>(<span style=color:#a6e22e>curBodyClass</span>)
+</span></span><span style=display:flex><span>      {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;default&#39;</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>setBodyClass</span>(<span style=color:#e6db74>&#39;narrow&#39;</span>);
+</span></span><span style=display:flex><span>          <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;narrow&#39;</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>setBodyClass</span>(<span style=color:#e6db74>&#39;large&#39;</span>);
+</span></span><span style=display:flex><span>          <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;large&#39;</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>setBodyClass</span>(<span style=color:#e6db74>&#39;default&#39;</span>);
+</span></span><span style=display:flex><span>          <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>setBodyClass</span>(<span style=color:#e6db74>&#39;narrow&#39;</span>);
+</span></span><span style=display:flex><span>          <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*(4) 使用console.log()函数记录在段落中移动的鼠标的坐标位置。（注意：console.log()
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    可以在Firefox的firebug扩展、Safari的Web Inspector或Chrome、IE中的Developer Tools中使
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    用。*/</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;p&#39;</span>).<span style=color:#a6e22e>mousemove</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>e</span>){
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;mouseXY:&#34;</span><span style=color:#f92672>+</span> <span style=color:#a6e22e>e</span>.<span style=color:#a6e22e>pageX</span><span style=color:#f92672>+</span><span style=color:#e6db74>&#34;,&#34;</span><span style=color:#f92672>+</span> <span style=color:#a6e22e>e</span>.<span style=color:#a6e22e>pageY</span>);
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*(5) 使用.mousedown()和.mouseup()跟踪页面中的鼠标事件。如果鼠标按键在按下
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  它的地方被释放，则为所有段落添加hidden类。如果是在按下它的地方之下被释放的，
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  删除所有段落的hidden类。*/</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>mousedownY</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>mousedown</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>e</span>){
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>mousedownY</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>e</span>.<span style=color:#a6e22e>pageY</span>
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>mouseup</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>e</span>){
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;mousedownY:&#34;</span><span style=color:#f92672>+</span> <span style=color:#a6e22e>mousedownY</span><span style=color:#f92672>+</span><span style=color:#e6db74>&#34;,&#34;</span><span style=color:#f92672>+</span> <span style=color:#a6e22e>e</span>.<span style=color:#a6e22e>pageY</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>e</span>.<span style=color:#a6e22e>pageY</span> <span style=color:#f92672>==</span> <span style=color:#a6e22e>mousedownY</span>){
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;p&#39;</span>).<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;hidden&#39;</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>e</span>.<span style=color:#a6e22e>pageY</span> <span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>mousedownY</span>){
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;p&#39;</span>).<span style=color:#a6e22e>removeClass</span>(<span style=color:#e6db74>&#39;hidden&#39;</span>)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><h2 id=样式和动画>样式和动画</h2><p><img src=/res/img/jquery/learningjquery3.png alt></p><p>1.position:relative; 相对定位，元素”相对于”它的原始起点进行移动。（相对定位时，无论是否进行移动，元素仍然占据原来的空间。因此，移动元素会导致它覆盖其他框）。
+2.position:absolute; 绝对定位，位置将依据浏览器左上角开始计算。
+3.父容器使用相对定位，子元素使用绝对定位后，子元素的位置相对于父容器左上角。
+4.相对定位和绝对定位需要配合top、right、bottom、left使用来定位具体位置。这四个属性同时只能使用相邻的两个，即上和下，左和右不能同时使用。</p><h3 id=code-view课后练习>code view&课后练习:</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>ready</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>$speech</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;div.speech&#39;</span>);
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>defaultSize</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$speech</span>.<span style=color:#a6e22e>css</span>(<span style=color:#e6db74>&#39;fontSize&#39;</span>);
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#switcher button&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>num</span> <span style=color:#f92672>=</span> parseFloat(<span style=color:#a6e22e>$speech</span>.<span style=color:#a6e22e>css</span>(<span style=color:#e6db74>&#39;fontSize&#39;</span>));
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>switch</span> (<span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>id</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;switcher-large&#39;</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>num</span> <span style=color:#f92672>*=</span> <span style=color:#ae81ff>1.4</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#39;switcher-small&#39;</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>num</span> <span style=color:#f92672>/=</span> <span style=color:#ae81ff>1.4</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>num</span> <span style=color:#f92672>=</span> parseFloat(<span style=color:#a6e22e>defaultSize</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$speech</span>.<span style=color:#a6e22e>animate</span>({<span style=color:#a6e22e>fontSize</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>num</span> <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;px&#39;</span>}, <span style=color:#e6db74>&#39;slow&#39;</span>);
+</span></span><span style=display:flex><span>  });<span style=color:#75715e>//switch button function--larg/small speech
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>$firstPara</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;p&#39;</span>).<span style=color:#a6e22e>eq</span>(<span style=color:#ae81ff>1</span>);
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$firstPara</span>.<span style=color:#a6e22e>hide</span>();
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;a.more&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$firstPara</span>.<span style=color:#a6e22e>animate</span>({
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>opacity</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;toggle&#39;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>height</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;toggle&#39;</span>
+</span></span><span style=display:flex><span>    }, <span style=color:#e6db74>&#39;slow&#39;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>$link</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>$link</span>.<span style=color:#a6e22e>text</span>() <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;read more&#39;</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$link</span>.<span style=color:#a6e22e>text</span>(<span style=color:#e6db74>&#39;read less&#39;</span>);
+</span></span><span style=display:flex><span>    } <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$link</span>.<span style=color:#a6e22e>text</span>(<span style=color:#e6db74>&#39;read more&#39;</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>false</span>;
+</span></span><span style=display:flex><span>  });<span style=color:#75715e>//展开/隐藏，注意toggle的使用
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;div.label&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>paraWidth</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;div.speech p&#39;</span>).<span style=color:#a6e22e>outerWidth</span>();
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>$switcher</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>parent</span>();
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>switcherWidth</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$switcher</span>.<span style=color:#a6e22e>outerWidth</span>();
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$switcher</span>
+</span></span><span style=display:flex><span>      .<span style=color:#a6e22e>css</span>({<span style=color:#a6e22e>position</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;relative&#39;</span>})
+</span></span><span style=display:flex><span>      .<span style=color:#a6e22e>fadeTo</span>(<span style=color:#e6db74>&#39;fast&#39;</span>, <span style=color:#ae81ff>0.5</span>)
+</span></span><span style=display:flex><span>      .<span style=color:#a6e22e>animate</span>({
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>left</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>paraWidth</span> <span style=color:#f92672>-</span> <span style=color:#a6e22e>switcherWidth</span>
+</span></span><span style=display:flex><span>      }, {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>duration</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;slow&#39;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>queue</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>false</span>
+</span></span><span style=display:flex><span>      })
+</span></span><span style=display:flex><span>      .<span style=color:#a6e22e>fadeTo</span>(<span style=color:#e6db74>&#39;slow&#39;</span>, <span style=color:#ae81ff>1.0</span>)
+</span></span><span style=display:flex><span>      .<span style=color:#a6e22e>slideUp</span>(<span style=color:#e6db74>&#39;slow&#39;</span>, <span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>$switcher</span>.<span style=color:#a6e22e>css</span>({<span style=color:#a6e22e>backgroundColor</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;#f00&#39;</span>});
+</span></span><span style=display:flex><span>      })
+</span></span><span style=display:flex><span>      .<span style=color:#a6e22e>slideDown</span>(<span style=color:#e6db74>&#39;slow&#39;</span>);
+</span></span><span style=display:flex><span>  });<span style=color:#75715e>//多效果并行和队列
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;p&#39;</span>).<span style=color:#a6e22e>eq</span>(<span style=color:#ae81ff>2</span>)
+</span></span><span style=display:flex><span>    .<span style=color:#a6e22e>css</span>(<span style=color:#e6db74>&#39;border&#39;</span>, <span style=color:#e6db74>&#39;1px solid #333&#39;</span>)
+</span></span><span style=display:flex><span>    .<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>$clickedItem</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>);
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$clickedItem</span>.<span style=color:#a6e22e>next</span>().<span style=color:#a6e22e>slideDown</span>(<span style=color:#e6db74>&#39;slow&#39;</span>, <span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>$clickedItem</span>.<span style=color:#a6e22e>slideUp</span>(<span style=color:#e6db74>&#39;slow&#39;</span>);
+</span></span><span style=display:flex><span>      });
+</span></span><span style=display:flex><span>    });<span style=color:#75715e>//回调机制，实现队列效果
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;p&#39;</span>).<span style=color:#a6e22e>eq</span>(<span style=color:#ae81ff>3</span>).<span style=color:#a6e22e>css</span>(<span style=color:#e6db74>&#39;backgroundColor&#39;</span>, <span style=color:#e6db74>&#39;#ccc&#39;</span>).<span style=color:#a6e22e>hide</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*1) 修改样式表，一开始先隐藏页面内容，当页面加载后，慢慢地淡入内容*/</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#container&#39;</span>).<span style=color:#a6e22e>hide</span>();
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#container&#39;</span>).<span style=color:#a6e22e>fadeIn</span>(<span style=color:#e6db74>&#34;slow&#34;</span>);
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*(2) 在鼠标悬停到段落上面时，给段落应用黄色背景*/</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>rgb</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;p&#39;</span>).<span style=color:#a6e22e>css</span>(<span style=color:#e6db74>&#39;backgroundColor&#39;</span>);
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;p&#39;</span>).<span style=color:#a6e22e>hover</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>css</span>({<span style=color:#a6e22e>backgroundColor</span><span style=color:#f92672>:</span><span style=color:#e6db74>&#39;#FFFF00&#39;</span>});
+</span></span><span style=display:flex><span>  },<span style=color:#66d9ef>function</span>(){
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>css</span>({<span style=color:#a6e22e>backgroundColor</span><span style=color:#f92672>:</span><span style=color:#a6e22e>rgb</span>})
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*(3)单击标题（&lt;h2&gt;）使其不透明度变为25%，同时添加20px的左外边距，当这两个效果完
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  成后，把讲话文本变成50%的不透明度；*/</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;h2&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>)
+</span></span><span style=display:flex><span>      .<span style=color:#a6e22e>animate</span>({
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>opacity</span><span style=color:#f92672>:</span><span style=color:#ae81ff>0.25</span>,
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>marginLeft</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;20px&#34;</span>  <span style=color:#75715e>//左外距
+</span></span></span><span style=display:flex><span>      });
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;div.speech p&#39;</span>).<span style=color:#a6e22e>fadeTo</span>(<span style=color:#e6db74>&#39;slow&#39;</span>,<span style=color:#ae81ff>0.5</span>);
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*(4)按下方向键时，使样式转换器向相应的方向平滑移动20像素*/</span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>keyup</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#switcher&#39;</span>).<span style=color:#a6e22e>css</span>({<span style=color:#a6e22e>position</span><span style=color:#f92672>:</span><span style=color:#e6db74>&#39;relative&#39;</span>});
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$switcher</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#switcher&#39;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>switch</span> (<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>keyCode</span>){
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>case</span> <span style=color:#ae81ff>37</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>$switcher</span>.<span style=color:#a6e22e>animate</span>({
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>left</span><span style=color:#f92672>:</span><span style=color:#e6db74>&#34;-=20px&#34;</span>
+</span></span><span style=display:flex><span>        });
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>case</span> <span style=color:#ae81ff>38</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>$switcher</span>.<span style=color:#a6e22e>animate</span>({
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>top</span><span style=color:#f92672>:</span><span style=color:#e6db74>&#34;-=20px&#34;</span>
+</span></span><span style=display:flex><span>        });
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>case</span> <span style=color:#ae81ff>39</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>$switcher</span>.<span style=color:#a6e22e>animate</span>({
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>left</span><span style=color:#f92672>:</span><span style=color:#e6db74>&#34;+=20px&#34;</span>
+</span></span><span style=display:flex><span>        });
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>case</span> <span style=color:#ae81ff>40</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>$switcher</span>.<span style=color:#a6e22e>animate</span>({
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>top</span><span style=color:#f92672>:</span><span style=color:#e6db74>&#34;+=20px&#34;</span>
+</span></span><span style=display:flex><span>        });
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><h2 id=dom操作>DOM操作</h2><p><img src=/res/img/jquery/learningjquery4.png alt></p><h3 id=code-view和练习>code view和练习：</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>ready</span>(<span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span> <span style=color:#75715e>// Use attr() to add an id, rel, and title.
+</span></span></span><span style=display:flex><span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;div.chapter a[href*=&#34;wikipedia&#34;]&#39;</span>).<span style=color:#a6e22e>attr</span>({
+</span></span><span style=display:flex><span>   <span style=color:#a6e22e>rel</span> <span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;external&#39;</span>,
+</span></span><span style=display:flex><span>   <span style=color:#a6e22e>title</span> <span style=color:#f92672>:</span> <span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>     <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;Learn more about &#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>text</span>() <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39; at Wikipedia.&#39;</span>;
+</span></span><span style=display:flex><span>   },
+</span></span><span style=display:flex><span>   <span style=color:#a6e22e>id</span> <span style=color:#f92672>:</span> <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>index</span>, <span style=color:#a6e22e>oldValue</span>) {
+</span></span><span style=display:flex><span>     <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;wikilink-&#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>index</span>;
+</span></span><span style=display:flex><span>   }
+</span></span><span style=display:flex><span> });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span> <span style=color:#75715e>// Add &#34;back to top&#34; links.
+</span></span></span><span style=display:flex><span> <span style=color:#75715e>//(1) 修改添加back to top链接的代码，以便这些链接只从第四段后面才开始出现
+</span></span></span><span style=display:flex><span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;&lt;a href=&#34;#top&#34;&gt;back to top&lt;/a&gt;&#39;</span>).<span style=color:#a6e22e>insertAfter</span>(<span style=color:#e6db74>&#39;div.chapter p:gt(2)&#39;</span>);
+</span></span><span style=display:flex><span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;&lt;a id=&#34;top&#34;&gt;&lt;/a&gt;&#39;</span>).<span style=color:#a6e22e>prependTo</span>(<span style=color:#e6db74>&#39;body&#39;</span>);
+</span></span><span style=display:flex><span> <span style=color:#75715e>//(2) 在单击back to top链接时，为每个链接后面添加一个新段落，其中包含You were here字样。确保链接仍然有效。
+</span></span></span><span style=display:flex><span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;.chapter a[href*=&#34;top&#34;]&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>   <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;&lt;p&gt;you were here&lt;/p&gt;&#39;</span>).<span style=color:#a6e22e>insertAfter</span>(<span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>));
+</span></span><span style=display:flex><span> });
+</span></span><span style=display:flex><span> <span style=color:#75715e>//(3) 在单击作者名字时，把文本改为粗体（通过添加一个标签，而不是操作类或CSS属性）。
+</span></span></span><span style=display:flex><span> <span style=color:#75715e>//(4) 在随后单击粗体作者名字时，删除之前添加的&lt;b&gt;元素（也就是在粗体文本与正常文本之间切换）。
+</span></span></span><span style=display:flex><span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#f-author&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>parent</span>().<span style=color:#a6e22e>is</span>(<span style=color:#e6db74>&#39;b&#39;</span>)) {
+</span></span><span style=display:flex><span>     <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>unwrap</span>(<span style=color:#e6db74>&#39;111&#39;</span>);
+</span></span><span style=display:flex><span>   } <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>     <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>wrap</span>(<span style=color:#e6db74>&#39;&lt;b&gt;&lt;/b&gt;&#39;</span>);
+</span></span><span style=display:flex><span>   }
+</span></span><span style=display:flex><span> });
+</span></span><span style=display:flex><span> <span style=color:#75715e>//(5) 为正文中的每个段落添加一个inhabitants类，但不能调用.addClass()方法。确保不影响现有的类。
+</span></span></span><span style=display:flex><span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;div.chapter p&#39;</span>).<span style=color:#a6e22e>wrapInner</span>(<span style=color:#e6db74>&#39;&lt;div class=&#34;inhabitants&#34;&gt;&lt;/div&gt;&#39;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span> <span style=color:#75715e>// Create footnotes.
+</span></span></span><span style=display:flex><span> <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>$notes</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;&lt;ol id=&#34;notes&#34;&gt;&lt;/ol&gt;&#39;</span>).<span style=color:#a6e22e>insertBefore</span>(<span style=color:#e6db74>&#39;#footer&#39;</span>); <span style=color:#75715e>//fooer之前创建插入有序列表
+</span></span></span><span style=display:flex><span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;span.footnote&#39;</span>).<span style=color:#a6e22e>each</span>(<span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>index</span>) { <span style=color:#75715e>//遍历脚注，使用each的回调函数处理
+</span></span></span><span style=display:flex><span>   <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>)
+</span></span><span style=display:flex><span>   .<span style=color:#a6e22e>before</span>([
+</span></span><span style=display:flex><span>       <span style=color:#e6db74>&#39;&lt;a href=&#34;#footnote-&#39;</span>,
+</span></span><span style=display:flex><span>       <span style=color:#a6e22e>index</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>,
+</span></span><span style=display:flex><span>       <span style=color:#e6db74>&#39;&#34; id=&#34;context-&#39;</span>,
+</span></span><span style=display:flex><span>       <span style=color:#a6e22e>index</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>,
+</span></span><span style=display:flex><span>       <span style=color:#e6db74>&#39;&#34; class=&#34;context&#34;&gt;&#39;</span>,
+</span></span><span style=display:flex><span>       <span style=color:#e6db74>&#39;&lt;sup&gt;&#39;</span>,
+</span></span><span style=display:flex><span>       <span style=color:#a6e22e>index</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>,
+</span></span><span style=display:flex><span>       <span style=color:#e6db74>&#39;&lt;/sup&gt;&lt;/a&gt;&#39;</span>
+</span></span><span style=display:flex><span>     ].<span style=color:#a6e22e>join</span>(<span style=color:#e6db74>&#39;&#39;</span>)) <span style=color:#75715e>//创建了一个包含指向脚注的链接和脚注编号的&lt;sup&gt;元素，insertBefore反向插入正文，
+</span></span></span><span style=display:flex><span>   .<span style=color:#a6e22e>appendTo</span>(<span style=color:#a6e22e>$notes</span>) <span style=color:#75715e>//将footnote加入到脚注
+</span></span></span><span style=display:flex><span>   .<span style=color:#a6e22e>append</span>([
+</span></span><span style=display:flex><span>       <span style=color:#e6db74>&#39; (&lt;a href=&#34;#context-&#39;</span>,
+</span></span><span style=display:flex><span>       <span style=color:#a6e22e>index</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>,
+</span></span><span style=display:flex><span>       <span style=color:#e6db74>&#39;&#34;&gt;context&lt;/a&gt;)&#39;</span>
+</span></span><span style=display:flex><span>     ].<span style=color:#a6e22e>join</span>(<span style=color:#e6db74>&#39;&#39;</span>)) <span style=color:#75715e>//创建指向上文脚注标签
+</span></span></span><span style=display:flex><span>   .<span style=color:#a6e22e>wrap</span>(<span style=color:#e6db74>&#39;&lt;li id=&#34;footnote-&#39;</span> <span style=color:#f92672>+</span> (<span style=color:#a6e22e>index</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>) <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;&#34;&gt;&lt;/li&gt;&#39;</span>); <span style=color:#75715e>//warp 将匹配元素包裹在元素或内容中
+</span></span></span><span style=display:flex><span> });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span> <span style=color:#75715e>// Style pull quotes.
+</span></span></span><span style=display:flex><span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;span.pull-quote&#39;</span>).<span style=color:#a6e22e>each</span>(<span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>index</span>) {
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>$parentParagraph</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>parent</span>(<span style=color:#e6db74>&#39;p&#39;</span>);
+</span></span><span style=display:flex><span>   <span style=color:#a6e22e>$parentParagraph</span>.<span style=color:#a6e22e>css</span>(<span style=color:#e6db74>&#39;position&#39;</span>, <span style=color:#e6db74>&#39;relative&#39;</span>); <span style=color:#75715e>//设置css样式相对定位
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>$clonedCopy</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>clone</span>(); <span style=color:#75715e>//复制
+</span></span></span><span style=display:flex><span>   <span style=color:#a6e22e>$clonedCopy</span>
+</span></span><span style=display:flex><span>   .<span style=color:#a6e22e>addClass</span>(<span style=color:#e6db74>&#39;pulled&#39;</span>)
+</span></span><span style=display:flex><span>   .<span style=color:#a6e22e>find</span>(<span style=color:#e6db74>&#39;span.drop&#39;</span>)
+</span></span><span style=display:flex><span>   .<span style=color:#a6e22e>html</span>(<span style=color:#e6db74>&#39;…&#39;</span>) <span style=color:#75715e>//修改
+</span></span></span><span style=display:flex><span>   .<span style=color:#a6e22e>end</span>()
+</span></span><span style=display:flex><span>   .<span style=color:#a6e22e>text</span>(<span style=color:#a6e22e>$clonedCopy</span>.<span style=color:#a6e22e>text</span>()) <span style=color:#75715e>//将text内容存文本化
+</span></span></span><span style=display:flex><span>   .<span style=color:#a6e22e>prependTo</span>(<span style=color:#a6e22e>$parentParagraph</span>);
+</span></span><span style=display:flex><span> });
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><h2 id=ajax>AJAX</h2><p><img src=/res/img/jquery/learningjquery5.png alt></p><h3 id=code-view和练习-1>code view和练习</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>ready</span>(<span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#letter-a a&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>preventDefault</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>.<span style=color:#a6e22e>ajaxSetup</span>({
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>url</span> <span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;a.html&#39;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>type</span> <span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;POST&#39;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>dataType</span> <span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;html&#39;</span>
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>.<span style=color:#a6e22e>ajax</span>({
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>type</span> <span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;GET&#39;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>success</span> <span style=color:#f92672>:</span> <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>data</span>) {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>).<span style=color:#a6e22e>html</span>(<span style=color:#a6e22e>data</span>);
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#letter-b a&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>preventDefault</span>();
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>.<span style=color:#a6e22e>getJSON</span>(<span style=color:#e6db74>&#39;b.json&#39;</span>, <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>data</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>html</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;&#39;</span>;
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$</span>.<span style=color:#a6e22e>each</span>(<span style=color:#a6e22e>data</span>, <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>entryIndex</span>, <span style=color:#a6e22e>entry</span>) {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;entry&#34;&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;h3 class=&#34;term&#34;&gt;&#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>term</span> <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;&lt;/h3&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;part&#34;&gt;&#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>part</span> <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;definition&#34;&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>definition</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>quote</span>) {
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;quote&#34;&gt;&#39;</span>;
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>$</span>.<span style=color:#a6e22e>each</span>(<span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>quote</span>, <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>lineIndex</span>, <span style=color:#a6e22e>line</span>) {
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;quote-line&#34;&gt;&#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>line</span> <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>          });
+</span></span><span style=display:flex><span>          <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>author</span>) {
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;quote-author&#34;&gt;&#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>author</span> <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>          }
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>      });
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>).<span style=color:#a6e22e>html</span>(<span style=color:#a6e22e>html</span>);
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#letter-c a&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>preventDefault</span>();
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>.<span style=color:#a6e22e>getScript</span>(<span style=color:#e6db74>&#39;c.js&#39;</span>);
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#letter-d a&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>preventDefault</span>();
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>.<span style=color:#a6e22e>get</span>(<span style=color:#e6db74>&#39;d.xml&#39;</span>, <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>data</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>).<span style=color:#a6e22e>empty</span>();
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$</span>(<span style=color:#a6e22e>data</span>).<span style=color:#a6e22e>find</span>(<span style=color:#e6db74>&#39;entry&#39;</span>).<span style=color:#a6e22e>each</span>(<span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>$entry</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>html</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;entry&#34;&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;h3 class=&#34;term&#34;&gt;&#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>$entry</span>.<span style=color:#a6e22e>attr</span>(<span style=color:#e6db74>&#39;term&#39;</span>);
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;/h3&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;part&#34;&gt;&#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>$entry</span>.<span style=color:#a6e22e>attr</span>(<span style=color:#e6db74>&#39;part&#39;</span>);
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;definition&#34;&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#a6e22e>$entry</span>.<span style=color:#a6e22e>find</span>(<span style=color:#e6db74>&#39;definition&#39;</span>).<span style=color:#a6e22e>text</span>();
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>$quote</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$entry</span>.<span style=color:#a6e22e>find</span>(<span style=color:#e6db74>&#39;quote&#39;</span>);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>$quote</span>.<span style=color:#a6e22e>length</span>) {
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;quote&#34;&gt;&#39;</span>;
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>$quote</span>.<span style=color:#a6e22e>find</span>(<span style=color:#e6db74>&#39;line&#39;</span>).<span style=color:#a6e22e>each</span>(<span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;quote-line&#34;&gt;&#39;</span>;
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>text</span>() <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>          });
+</span></span><span style=display:flex><span>          <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>$quote</span>.<span style=color:#a6e22e>attr</span>(<span style=color:#e6db74>&#39;author&#39;</span>)) {
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;quote-author&#34;&gt;&#39;</span>;
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#a6e22e>$quote</span>.<span style=color:#a6e22e>attr</span>(<span style=color:#e6db74>&#39;author&#39;</span>) <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>          }
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>).<span style=color:#a6e22e>append</span>(<span style=color:#a6e22e>$</span>(<span style=color:#a6e22e>html</span>));
+</span></span><span style=display:flex><span>      });
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#letter-e a&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>preventDefault</span>();
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>requestData</span> <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>term</span> <span style=color:#f92672>:</span> <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>text</span>()
+</span></span><span style=display:flex><span>    };
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>.<span style=color:#a6e22e>get</span>(<span style=color:#e6db74>&#39;e.php&#39;</span>, <span style=color:#a6e22e>requestData</span>, <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>data</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>).<span style=color:#a6e22e>html</span>(<span style=color:#a6e22e>data</span>);
+</span></span><span style=display:flex><span>    }).<span style=color:#a6e22e>fail</span>(<span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>jqXHR</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>)
+</span></span><span style=display:flex><span>      .<span style=color:#a6e22e>html</span>(<span style=color:#e6db74>&#39;Sorry, but an error occurred: &#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>jqXHR</span>.<span style=color:#a6e22e>status</span>)
+</span></span><span style=display:flex><span>      .<span style=color:#a6e22e>append</span>(<span style=color:#a6e22e>jqXHR</span>.<span style=color:#a6e22e>responseText</span>);
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#letter-f form&#39;</span>).<span style=color:#a6e22e>submit</span>(<span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>preventDefault</span>();
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>formValues</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>serialize</span>();
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>.<span style=color:#a6e22e>get</span>(<span style=color:#e6db74>&#39;f.php&#39;</span>, <span style=color:#a6e22e>formValues</span>, <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>data</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>).<span style=color:#a6e22e>html</span>(<span style=color:#a6e22e>data</span>);
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>url</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;http://examples.learningjquery.com/jsonp/g.php&#39;</span>;
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#letter-g a&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>preventDefault</span>();
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>.<span style=color:#a6e22e>getJSON</span>(<span style=color:#a6e22e>url</span> <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;?callback=?&#39;</span>, <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>data</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>html</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;&#39;</span>;
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$</span>.<span style=color:#a6e22e>each</span>(<span style=color:#a6e22e>data</span>, <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>entryIndex</span>, <span style=color:#a6e22e>entry</span>) {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;entry&#34;&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;h3 class=&#34;term&#34;&gt;&#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>term</span> <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;&lt;/h3&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;part&#34;&gt;&#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>part</span> <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;definition&#34;&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>definition</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>quote</span>) {
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;quote&#34;&gt;&#39;</span>;
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>$</span>.<span style=color:#a6e22e>each</span>(<span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>quote</span>, <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>lineIndex</span>, <span style=color:#a6e22e>line</span>) {
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;quote-line&#34;&gt;&#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>line</span> <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>          });
+</span></span><span style=display:flex><span>          <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>author</span>) {
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;div class=&#34;quote-author&#34;&gt;&#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>entry</span>.<span style=color:#a6e22e>author</span> <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>          }
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>html</span> <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#39;&lt;/div&gt;&#39;</span>;
+</span></span><span style=display:flex><span>      });
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>).<span style=color:#a6e22e>html</span>(<span style=color:#a6e22e>html</span>);
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#letter-h a&#39;</span>).<span style=color:#a6e22e>click</span>(<span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>event</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>preventDefault</span>();
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>).<span style=color:#a6e22e>load</span>(<span style=color:#e6db74>&#39;h.html .entry&#39;</span>);
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>$loading</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;&lt;div id=&#34;loading&#34;&gt;Loading...&lt;/div&gt;&#39;</span>)
+</span></span><span style=display:flex><span>    .<span style=color:#a6e22e>insertBefore</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>ajaxStart</span>(<span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$loading</span>.<span style=color:#a6e22e>show</span>();
+</span></span><span style=display:flex><span>  }).<span style=color:#a6e22e>ajaxStop</span>(<span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$loading</span>.<span style=color:#a6e22e>hide</span>();
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;body&#39;</span>).<span style=color:#a6e22e>on</span>(<span style=color:#e6db74>&#39;click&#39;</span>, <span style=color:#e6db74>&#39;h3.term&#39;</span>, <span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#66d9ef>this</span>).<span style=color:#a6e22e>siblings</span>(<span style=color:#e6db74>&#39;.definition&#39;</span>).<span style=color:#a6e22e>slideToggle</span>();
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>  <span style=color:#75715e>//(1) 页面加载后，把exercises-content.html的主体（body）内容提取到页面的内容区域
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>).<span style=color:#a6e22e>load</span>(<span style=color:#e6db74>&#39;exercises-content.html&#39;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>//(2)请为左侧的字母列表创建“提示条”，当用户鼠标放到字母上时，从exercises-content.html中加载与该字母有关的内容。
+</span></span></span><span style=display:flex><span>  <span style=color:#75715e>//(3) 为页面加载添加错误处理功能，在页面的内容区显示错误消息。修改脚本，请求does-notexist.html而不是exercises-content.html，以测试错误处理功能。
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;.letter&#39;</span>).<span style=color:#a6e22e>mouseenter</span>(<span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>e</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>e</span>.<span style=color:#a6e22e>preventDefault</span>();
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>).<span style=color:#a6e22e>load</span>(<span style=color:#e6db74>&#39;exercises-content.html #&#39;</span> <span style=color:#f92672>+</span> <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>id</span>, <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>response</span>, <span style=color:#a6e22e>status</span>, <span style=color:#a6e22e>jqXHR</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>status</span> <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;error&#39;</span>) {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>)
+</span></span><span style=display:flex><span>        .<span style=color:#a6e22e>html</span>(<span style=color:#e6db74>&#39;An error occurred: &#39;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>jqXHR</span>.<span style=color:#a6e22e>status</span>)
+</span></span><span style=display:flex><span>        .<span style=color:#a6e22e>append</span>(<span style=color:#a6e22e>jqXHR</span>.<span style=color:#a6e22e>responseText</span>);
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>  }).<span style=color:#a6e22e>mouseleave</span>(<span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#39;#dictionary&#39;</span>).<span style=color:#a6e22e>html</span>(<span style=color:#e6db74>&#39;&#39;</span>);
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  $(&#39;.letter&#39;).mouseenter(function (e) {
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  $(&#39;#dictionary&#39;)
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  .load(&#39;does-not-exist.html #&#39; + this.id);
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  })
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  .fail(function (jqXHR) {
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  $(&#39;#dictionary&#39;)
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  .html(&#39;sorry An error occurred: &#39; + jqXHR.status)
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  .append(jqXHR.responseText);
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  })
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   */</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*(4) 页面加载后，向GitHub发送一个JSONP请求，取得某个用户代码库的列表。把每
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  个代码库的名称和URL插入到页面的内容区。取得jQuery项目代码库的URL是https://api.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  github.com/users/jquery/repos。
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  githubUrl = &#39;https://api.github.com/users/jquery/repos&#39;
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    $.getJSON(githubUrl + &#39;?callback=?&#39;, function (data) {
+</span></span></span><span style=display:flex><span><span style=color:#75715e>      var html = &#39;&#39;;
+</span></span></span><span style=display:flex><span><span style=color:#75715e>      $.each(data, function (entryIndex, entry) {
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        $.each(entry, function (itemIndex, item) {
+</span></span></span><span style=display:flex><span><span style=color:#75715e>          html += &#39;&lt;div class=&#34;entry&#34;&gt;&#39;;
+</span></span></span><span style=display:flex><span><span style=color:#75715e>          html += &#39;&lt;div class=&#34;name&#34;&gt;&#39; + item.name + &#39;&lt;/div&gt;&#39;;
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        }
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        });
+</span></span></span><span style=display:flex><span><span style=color:#75715e>      });
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  */</span>
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div></div></article></main><footer class=footer><p>© 2026 Lizorn</p></footer></div></body></html>

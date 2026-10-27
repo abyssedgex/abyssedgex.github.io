@@ -1,0 +1,131 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>hadoop实战(二) — 山海炼物</title><meta name=description content="山海炼物 — 炼物成器，格物致知"><link rel=stylesheet href=/css/style.css><link rel=icon href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚒️</text></svg>"><link rel=preconnect href=https://fonts.googleapis.com><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel=stylesheet></head><body><div class=container><header class=header><nav class=nav><span class=nav-prompt>❯</span>
+<span class=nav-sep>~</span>
+<a class=site-title href=https://lizorn.com/>山海炼物</a>
+<span class=nav-links><a href=/about/>关于</a>
+<a href=/posts/>文章</a>
+<a href=/talks/>Talks</a>
+<a href=/projects/>项目</a></span></nav></header><main class=main><article class=post><h1 class=post-title>hadoop实战(二)</h1><time class=post-date>2017-06-01</time><div class=post-content><h1 id=wordcount统计词频>WordCount统计词频</h1><h2 id=mapreduce实现>MapReduce实现</h2><h3 id=wordcountjava源码>WordCount.java源码</h3><pre tabindex=0><code>import java.io.IOException;
+import java.util.StringTokenizer;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+public class WordCount {
+  public static class TokenizerMapper extends Mapper&lt;Object, Text, Text, IntWritable&gt;{
+    private final static IntWritable one = new IntWritable(1);
+    private Text word = new Text();
+    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+      StringTokenizer itr = new StringTokenizer(value.toString());
+      while (itr.hasMoreTokens()) {
+        word.set(itr.nextToken());
+        context.write(word, one);
+      }
+    }
+  }
+  public static class IntSumReducer extends Reducer&lt;Text,IntWritable,Text,IntWritable&gt; {
+    private IntWritable result = new IntWritable();
+    public void reduce(Text key, Iterable&lt;IntWritable&gt; values,
+                        Context context) throws IOException, InterruptedException {
+        int sum = 0;
+        for (IntWritable val : values) {
+          sum += val.get();
+        }
+        result.set(sum);
+        context.write(key, result);
+    }
+  }
+  public static void main(String[] args) throws Exception {
+    Configuration conf = new Configuration();
+    Job job = Job.getInstance(conf, &#34;word count&#34;);
+    job.setJarByClass(WordCount.class);
+    job.setMapperClass(TokenizerMapper.class);
+    job.setCombinerClass(IntSumReducer.class);
+    job.setReducerClass(IntSumReducer.class);
+    job.setOutputKeyClass(Text.class);
+    job.setOutputValueClass(IntWritable.class);
+    FileInputFormat.addInputPath(job, new Path(args[0]));
+    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+    System.exit(job.waitForCompletion(true) ? 0 : 1);
+  }
+}
+</code></pre><h3 id=编译>编译</h3><pre tabindex=0><code>hadoop com.sun.tools.javac.Main WordCount.java
+jar cf wc.jar WordCount*.class
+</code></pre><h3 id=创建dfs>创建DFS</h3><p>在hdfs上的用户目录下创建输入/输出文件的文件夹.</p><pre tabindex=0><code>hadoop fs -mkdir -p /user/{whoami}/wordcount/input
+</code></pre><p>下本书</p><pre tabindex=0><code>mkdir -p ~/tmp/book/
+cd ~/tmp/book
+wget http://www.gutenberg.org/files/5000/5000-8.txt
+</code></pre><p>将书放到HDFS上</p><pre tabindex=0><code>hadoop fs -put ~/tmp/book/*.txt /user/${whoami}/wordcount/input
+</code></pre><h3 id=执行mapreduce>执行MapReduce</h3><pre tabindex=0><code>hadoop jar wc.jar WordCount /user/${whoami}/wordcount/input /user/${whoami}/wordcount/output
+</code></pre><p>查看解析内容</p><pre tabindex=0><code>hadoop fs -cat /user/${whoami}/wordcount/output/part-r-00000
+</code></pre><h2 id=hadoopstreaming实现>HadoopStreaming实现</h2><p>Hadoop是使用Java语言编写的,所以最直接的方式的就是使用Java语言来实现Mapper和Reducer,然后配置MapReduce Job,提交到集群计算环境来完成计算.
+hadoop也为其它语言，如C++、Shell、Python、 Ruby、PHP、Perl等提供了支持，这个工具就是Hadoop Streaming.</p><h3 id=wordcount的python实现>wordcount的python实现</h3><p>mapper.py源码</p><pre tabindex=0><code>#!/usr/bin/env python
+import sys
+def read_input(file):
+    for line in file:
+        yield line.split()
+def main(separator=&#39;\t&#39;):
+    data = read_input(sys.stdin)
+    for words in data:
+        for word in words:
+            print &#34;%s%s%d&#34; % (word, separator, 1)
+if __name__ == &#34;__main__&#34;:
+    main()
+</code></pre><p>reducer.py</p><pre tabindex=0><code>#!/usr/bin/env python
+from operator import itemgetter
+from itertools import groupby
+import sys
+def read_mapper_output(file, separator = &#39;\t&#39;):
+    for line in file:
+        yield line.rstrip().split(separator, 1)
+def main(separator = &#39;\t&#39;):
+    data = read_mapper_output(sys.stdin, separator = separator)
+    for current_word, group in groupby(data, itemgetter(0)):
+        try:
+            total_count = sum(int(count) for current_word, count in group)
+            print &#34;%s%s%d&#34; % (current_word, separator, total_count)
+        except valueError:
+            pass
+if __name__ == &#34;__main__&#34;:
+    main()
+</code></pre><h3 id=运行>运行</h3><p>可以写个sh脚本运行</p><pre tabindex=0><code>hadoop jar $STREAM  \
+-files ./mapper.py,./reducer.py \
+-mapper ./mapper.py \
+-reducer ./reducer.py \
+-input /user/${whoami}/wordcount/input/ \
+-output ~/output
+</code></pre><h2 id=spark实现>Spark实现</h2><p>运行spark的python交互式控制台,pyspark.</p><pre tabindex=0><code>hadoop@4532e4bdaa51:~$ pyspark
+Python 2.7.6 (default, Jun 22 2015, 17:58:13)
+[GCC 4.8.2] on linux2
+Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
+Using Spark&#39;s default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to &#34;WARN&#34;.
+To adjust logging level use sc.setLogLevel(newLevel).
+16/10/28 02:10:51 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  &#39;_/
+   /__ / .__/\_,_/_/ /_/\_\   version 2.0.1
+      /_/
+Using Python version 2.7.6 (default, Jun 22 2015 17:58:13)
+SparkSession available as &#39;spark&#39;.
+&gt;&gt;&gt;
+</code></pre><p>使用textFile加载文本到RDD,进行’wordcount’.</p><pre tabindex=0><code>&gt;&gt;&gt; text = sc.textFile(&#34;hdfs://localhost:9000/user/${whoami}/wordcount/input&#34;)
+&gt;&gt;&gt; counts = text.flatMap(lambda line: line.split(&#34; &#34;)).map(lambda word: (word,1)).reduceByKey(lambda x,y: x + y)
+</code></pre><p>调用saveAsTextFile,分布式作业开始…</p><pre tabindex=0><code>counts.saveAsTextFile(&#34;hdfs://localhost:9000/wordcount/spark_out&#34;)
+</code></pre><p>可以在工作台输出目录里查看</p><pre tabindex=0><code>hadoop fs -cat  hdfs://localhost:9000/wordcount/spark_out/part-00000
+...
+(u&#39;Well&#39;, 1)
+(u&#39;roar,&#39;, 1)
+(u&#39;Lust&#39;, 1)
+(u&#39;up-side-down&#39;, 1)
+(u&#39;sozza&#39;, 1)
+(u&#39;primus&#39;, 1)
+(u&#39;expands&#39;, 1)
+...
+</code></pre></div></article></main><footer class=footer><p>© 2026 Lizorn</p></footer></div></body></html>

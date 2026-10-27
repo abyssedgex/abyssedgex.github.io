@@ -1,0 +1,119 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>区块链导论:以太坊DAPP（宠物店应用） — 山海炼物</title><meta name=description content="山海炼物 — 炼物成器，格物致知"><link rel=stylesheet href=/css/style.css><link rel=icon href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚒️</text></svg>"><link rel=preconnect href=https://fonts.googleapis.com><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel=stylesheet></head><body><div class=container><header class=header><nav class=nav><span class=nav-prompt>❯</span>
+<span class=nav-sep>~</span>
+<a class=site-title href=https://lizorn.com/>山海炼物</a>
+<span class=nav-links><a href=/about/>关于</a>
+<a href=/posts/>文章</a>
+<a href=/talks/>Talks</a>
+<a href=/projects/>项目</a></span></nav></header><main class=main><article class=post><h1 class=post-title>区块链导论:以太坊DAPP（宠物店应用）</h1><time class=post-date>2018-05-22</time><div class=post-content><p>宠物领养应用是Truffle自带的一个教程应用，通过本教程你将学到以下内容：</p><ol><li>使用<code>Truffle Box</code>来创建<code>Truffle工程</code></li><li>编写智能合约</li><li>编译部署智能合约</li><li>测试智能合约</li><li>创建一个可与智能合约交互的用户接口</li><li>浏览器内访问<code>DAPP</code></li></ol><h1 id=使用truffle-box来创建truffle工程>使用<code>Truffle Box</code>来创建<code>Truffle工程</code></h1><pre tabindex=0><code>mkdir pet-shop
+</code></pre><h1 id=编写和测试智能合约>编写和测试智能合约</h1><ol><li><p>创建文件<code>contracts/Adoption.sol</code></p><pre tabindex=0><code>pragma solidity ^0.4.17;
+
+contract Adoption {
+  address[16] public adopters;
+  // 领养宠物
+  function adopt(uint petId) public returns (uint) {
+    require(petId &gt;= 0 &amp;&amp; petId &lt;= 15);
+
+    adopters[petId] = msg.sender;
+
+    return petId;
+  }
+  // Retireving the adopters
+  function getAdopters() public view returns (address[16]) {
+    return adopters;
+  }
+}
+</code></pre></li><li><p>编写测试代码,’test/TestAdoption.sol’</p></li></ol><pre tabindex=0><code>pragma solidity ^0.4.17;
+
+import &#34;truffle/Assert.sol&#34;;
+import &#34;truffle/DeployedAddresses.sol&#34;;
+import &#34;../contracts/Adoption.sol&#34;;
+
+contract TestAdoption {
+  Adoption adoption = Adoption(DeployedAddresses.Adoption());
+  // Testing the adopt() function
+  function testUserCanAdoptPet() public {
+    uint returnedId = adoption.adopt(8);
+
+    uint expected = 8;
+
+    Assert.equal(returnedId, expected, &#34;Adoption of pet ID 8 should be recorded.&#34;);
+  }
+  // Testing retrieval of all pet owners
+  function testGetAdopterAddressByPetIdInArray() public {
+    // Expected owner is this contract
+    address expected = this;
+
+    // Store adopters in memory rather than contract&#39;s storage
+    address[16] memory adopters = adoption.getAdopters();
+
+    Assert.equal(adopters[8], expected, &#34;Owner of pet ID 8 should be recorded.&#34;);
+  }
+}
+</code></pre><ul><li><code>Assert.sol</code>：单元测试的assert方法,具体<a href=https://github.com/trufflesuite/truffle-core/blob/master/lib/testing/Assert.sol>查看</a></li><li><code>DeployedAddresses.sol</code>: 执行<code>truffle</code>测试用例，truffle会部署一个新的合约用力到区块链中，这个合约用户获得<code>被部署的合约</code></li></ul><p>执行测试。</p><pre tabindex=0><code>➜  pet-shop-tutorial truffle test
+Using network &#39;development&#39;.
+
+Compiling ./contracts/Adoption.sol...
+Compiling ./test/TestAdoption.sol...
+Compiling truffle/Assert.sol...
+Compiling truffle/DeployedAddresses.sol...
+
+  TestAdoption
+    ✓ testUserCanAdoptPet (197ms)
+    ✓ testGetAdopterAddressByPetId (165ms)
+    ✓ testGetAdopterAddressByPetIdInArray (333ms)
+
+  3 passing (2s)
+</code></pre><h1 id=构建前端应用页面>构建前端应用页面</h1><ol><li><p>打开<code>/src/js/app.js</code>，替换<code>replace me</code>代码段。</p><ul><li><p>initWeb3</p><pre tabindex=0><code>// Is there an injected web3 instance?
+if (typeof web3 !== &#39;undefined&#39;) {
+  App.web3Provider = web3.currentProvider;
+} else {
+  // If no injected web3 instance is detected, fall back to Ganache
+  App.web3Provider = new Web3.providers.HttpProvider(&#39;http://localhost:7545&#39;);
+}
+web3 = new Web3(App.web3Provider);
+</code></pre><p>判断web3实例是否存在(<code>Mist</code>或者<code>MentaMask</code>)，如果存在则返回实例，不存在就新建。</p></li><li><p>initContract</p><pre tabindex=0><code>$.getJSON(&#39;Adoption.json&#39;, function(data) {
+ // 获取合约文件并使用truffle-contract方法实例化
+ var AdoptionArtifact = data;
+ App.contracts.Adoption = TruffleContract(AdoptionArtifact);
+
+ // 将智能合约实例加载到服务容器中，此处是web3Providers
+ App.contracts.Adoption.setProvider(App.web3Provider);
+
+ // 使用合约来获取和标记被领养的宠物
+ return App.markAdopted();
+});
+</code></pre></li><li><p>markAdopted</p><pre tabindex=0><code>var adoptionInstance;
+
+App.contracts.Adoption.deployed().then(function(instance) {
+  adoptionInstance = instance;
+
+  return adoptionInstance.getAdopters.call();
+}).then(function(adopters) {
+  for (i = 0; i &lt; adopters.length; i++) {
+    if (adopters[i] !== &#39;0x0000000000000000000000000000000000000000&#39;) {
+      $(&#39;.panel-pet&#39;).eq(i).find(&#39;button&#39;).text(&#39;Success&#39;).attr(&#39;disabled&#39;, true);
+    }
+  }
+}).catch(function(err) {
+  console.log(err.message);
+});
+</code></pre><p>使用getAdopters方法获得所有被领养的宠物，并将对应领养按钮设为<code>disable</code>。</p></li><li><p>handleAdopt</p><pre tabindex=0><code>var adoptionInstance;
+web3.eth.getAccounts(function(error, accounts) {
+  if (error) {
+    console.log(error);
+  }
+// 获取当前账户
+var account = accounts[0];
+
+App.contracts.Adoption.deployed().then(function(instance) {
+  adoptionInstance = instance;
+  // Execute adopt as a transaction by sending account
+  return adoptionInstance.adopt(petId, {from: account});
+  }).then(function(result) {
+    return App.markAdopted();
+  }).catch(function(err) {
+    console.log(err.message);
+  });
+});
+</code></pre></li></ul></li></ol><h1 id=运行web-server>运行web server</h1><pre tabindex=0><code>npm run dev
+</code></pre><h1 id=完整代码>完整代码</h1><p><a href=https://github.com/LiZoRN/BlockChain/tree/master/ethereum/pet-shop-tutorial>pet-shop</a></p><h1 id=issue>issue</h1><ol><li>修改DAPP的index.html，将<code>&lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js">&lt;/script></code>替换为<code>https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js</code></li></ol></div></article></main><footer class=footer><p>© 2026 Lizorn</p></footer></div></body></html>

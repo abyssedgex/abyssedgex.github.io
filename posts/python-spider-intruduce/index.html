@@ -1,0 +1,217 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>python spider intruduce — 山海炼物</title><meta name=description content="山海炼物 — 炼物成器，格物致知"><link rel=stylesheet href=/css/style.css><link rel=icon href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚒️</text></svg>"><link rel=preconnect href=https://fonts.googleapis.com><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel=stylesheet></head><body><div class=container><header class=header><nav class=nav><span class=nav-prompt>❯</span>
+<span class=nav-sep>~</span>
+<a class=site-title href=https://lizorn.com/>山海炼物</a>
+<span class=nav-links><a href=/about/>关于</a>
+<a href=/posts/>文章</a>
+<a href=/talks/>Talks</a>
+<a href=/projects/>项目</a></span></nav></header><main class=main><article class=post><h1 class=post-title>python spider intruduce</h1><time class=post-date>2018-05-22</time><div class=post-content><p>爬虫入门简单，精通也不易。虽然爬虫是Python的看家本领，网上也有大量的教程，但是大部分文章所涉及的内容都的粗浅，没有系统性的介绍，也不具备工程实战性。遂系统性的梳理一下。</p><h1 id=什么是爬虫>什么是爬虫</h1><p><code>爬虫</code>（又被称为网页蜘蛛，网络机器人，在FOAF社区中间，更经常的称为网页追逐者），是一种按照一定的规则，自动地抓取万维网信息的程序或者脚本。另外一些不常使用的名字还有蚂蚁、自动索引、模拟程序或者蠕虫。</p><p>如果把互联网比喻成一个蜘蛛网，Spider就是一只在网上爬来爬去的蜘蛛。网络爬虫就是根据网页的地址来寻找网页的，也就是URL。Google、baidu就是最大的爬虫，搜索引擎的数据内容都是由<code>网络蜘蛛</code>爬去网络而来。</p><h2 id=什么是url>什么是URL</h2><p>URL:统一资源定位符(Uniform Resource Locator)，一般格式如下：</p><p><code>protocol ://hostname[port]/path/[parameters][?query]#fragment</code></p><p>URL的格式由三部分组成：</p><ol><li>protocol：协议，通讯协议。一般使用TCP/IP应用层协议，例如http/https/ftp/smb等等；</li><li>hostname[:port]：主机名[端口号];</li><li>path: 资源在主机中的具体地址，如目录和文件名等。</li></ol><p>通常，爬虫使用<code>URL</code>来获取(Request)资源信息，并对返回内容(Response)做对应的解析和处理。返回的内容比较多样，比如<code>文本</code>、<code>图片</code>、<code>excel/csv</code>、<code>json/xml</code>、<code>html</code>等。大部分人只知道<code>html</code>爬虫也就是通常意义上的<code>web spider</code>，因为它需求广泛而且解析较简单。</p><h1 id=内容解析方式>内容解析方式</h1><p>爬虫获取的数据是多样的，<code>Response</code>可能是一堆字符串也有可能是一个二进制文件，这取决于文本的编码方式；<code>Response</code>可能是结构化的（数据库、json）也有可能是非结构化的（比如图片、视频），这取决于资源的组织形式。</p><p>解析非结构化的数据，一般需要耗费大量的资源，然后训练出一个相对拟合的、结构化的模型，最后用这个模型分析返回的数据，并且这一过程可能是不断迭代的，直到达到真正的价值转移。</p><p>这里我们只找<code>软柿子</code>捏。解析软柿子一般有以下几种形式：</p><h2 id=xmljsoncsv>XML/JSON/CSV</h2><p>这类数据已经是非常结构化的数据了，并且有大量的第三方库支持，它们是烂柿子，这里就不捏了。</p><p>XML</p><ul><li><a href=https://docs.python.org/3/library/xml.html>libxml</a></li><li><a href=https://pypi.org/project/lxml/>lxml</a></li></ul><p>JSON:</p><ul><li><a href=https://docs.python.org/3/library/json.html>json</a></li></ul><p>CSV:</p><ul><li><a href=https://docs.python.org/3/library/csv.html>csv</a></li><li><a href=https://pypi.org/project/xlrd/>excel</a></li></ul><h2 id=文本>文本</h2><h3 id=正则表达式>正则表达式</h3><p>正则表达式是一个特殊的字符序列，它能帮助你方便的检查一个字符串是否与某种模式匹配。</p><h4 id=目的>目的</h4><p>给定一个正则表达式和另一个字符串，我们可以达到如下的目的：</p><ol><li><p>给定的字符串是否符合正则表达式的过滤逻辑（称作“匹配”）：</p></li><li><p>可以通过正则表达式，从字符串中获取我们想要的特定部分。</p><h4 id=特点>特点</h4></li></ol><p>正则表达式的特点是：</p><ol><li>灵活性、逻辑性和功能性非常强；</li><li>可以迅速地用极简单的方式达到字符串的复杂控制。</li><li>对于刚接触的人来说，比较晦涩难懂。</li></ol><h4 id=python-re-module>python RE Module</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>&gt;&gt;&gt;</span> text <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;He was carefully disguised but captured quickly by police.&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&gt;&gt;&gt;</span> re<span style=color:#f92672>.</span>findall(<span style=color:#e6db74>r</span><span style=color:#e6db74>&#34;\w+ly&#34;</span>, text)
+</span></span><span style=display:flex><span>[<span style=color:#e6db74>&#39;carefully&#39;</span>, <span style=color:#e6db74>&#39;quickly&#39;</span>]
+</span></span></code></pre></div><ul><li>几个特殊字符要注意:
+1、. 匹配任意除换行符“\n”外的字符；
+2、<em>表示匹配前一个字符0次或无限次；
+3、+或</em>后跟？表示非贪婪匹配，即尽可能少的匹配，如*？重复任意次，但尽可能少重复；
+4、 .*? 表示匹配任意数量的重复，但是在能使整个匹配成功的前提下使用最少的重复。</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span>In [<span style=color:#ae81ff>1</span>]: s <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;aabab&#39;</span>
+</span></span><span style=display:flex><span>In [<span style=color:#ae81ff>2</span>]: <span style=color:#f92672>import</span> re
+</span></span><span style=display:flex><span>In [<span style=color:#ae81ff>3</span>]: re<span style=color:#f92672>.</span>findall(<span style=color:#e6db74>r</span><span style=color:#e6db74>&#39;a\w+b&#39;</span>,s)
+</span></span><span style=display:flex><span>Out[<span style=color:#ae81ff>3</span>]: [<span style=color:#e6db74>&#39;aabab&#39;</span>]
+</span></span><span style=display:flex><span>In [<span style=color:#ae81ff>4</span>]: re<span style=color:#f92672>.</span>findall(<span style=color:#e6db74>r</span><span style=color:#e6db74>&#39;a\w+?b&#39;</span>,s)
+</span></span><span style=display:flex><span>Out[<span style=color:#ae81ff>4</span>]: [<span style=color:#e6db74>&#39;aab&#39;</span>]
+</span></span><span style=display:flex><span>In [<span style=color:#ae81ff>5</span>]: re<span style=color:#f92672>.</span>findall(<span style=color:#e6db74>r</span><span style=color:#e6db74>&#39;a\w*?b&#39;</span>,s)
+</span></span><span style=display:flex><span>Out[<span style=color:#ae81ff>5</span>]: [<span style=color:#e6db74>&#39;aab&#39;</span>, <span style=color:#e6db74>&#39;ab&#39;</span>]
+</span></span></code></pre></div><p>其他内容见<a href=https://docs.python.org/3/library/re.html>官网</a>
+<a href=https://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/001386832260566c26442c671fa489ebc6fe85badda25cd000>正则表达式</a></p><h3 id=html>HTML</h3><p><code>HTML</code>:超文本标记语言，标准通用标记语言下的一个应用。“超文本”就是指页面内可以包含图片、链接，甚至音乐、程序等非文字元素。网络爬虫主要处理的就是这种格式的文本。在python体系中，有很多自带的方法和丰富的第三方库来处理这类数据。</p><ul><li><a href=https://docs.python.org/3/library/markup.html>htmlparser</a></li><li><a href=https://pypi.org/project/bs4/>BeautifulSoup</a></li></ul><h4 id=xpath>XPath</h4><p>什么是 XPath?</p><ul><li>XPath 使用路径表达式在 XML 文档中进行导航</li><li>XPath 包含一个标准函数库</li><li>XPath 是 XSLT 中的主要元素</li><li>XPath 是一个 W3C 标准</li></ul><p>总之<code>XPath</code> 是一门在<code>XML</code>文档中查找信息的语言，它使用路径表达式来选取<code>XML</code>文档中的节点或节点集。</p><p><code>XML</code>是<code>HTML</code>的超集合。我们也可以使用<code>xpath</code>语法来解析<code>html</code>。</p><h5 id=路径表达式>路径表达式</h5><table><thead><tr><th>表达式</th><th>描述</th></tr></thead><tbody><tr><td>nodename</td><td>选取此节点的所有子节点。</td></tr><tr><td>/</td><td>从根节点选取。</td></tr><tr><td>//</td><td>从匹配选择的当前节点选择文档中的节点，而不考虑它们的位置。</td></tr><tr><td>.</td><td>选取当前节点。</td></tr><tr><td>..</td><td>选取当前节点的父节点。</td></tr><tr><td>@</td><td>选取属性。</td></tr></tbody></table><h4 id=示例>示例</h4><h5 id=htmlparser><a href=https://docs.python.org/3/library/html.parser.html>html.parser</a></h5><p>htmlParser是python自带的库，可以方便的对html结构的数据做解析。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> html.parser <span style=color:#f92672>import</span> HTMLParser
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> html.entities <span style=color:#f92672>import</span> name2codepoint
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>MyHTMLParser</span>(HTMLParser):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_starttag</span>(self, tag, attrs):
+</span></span><span style=display:flex><span>        print(<span style=color:#e6db74>&#34;Start tag:&#34;</span>, tag)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> attr <span style=color:#f92672>in</span> attrs:
+</span></span><span style=display:flex><span>            print(<span style=color:#e6db74>&#34;     attr:&#34;</span>, attr)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_endtag</span>(self, tag):
+</span></span><span style=display:flex><span>        print(<span style=color:#e6db74>&#34;End tag  :&#34;</span>, tag)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_data</span>(self, data):
+</span></span><span style=display:flex><span>        print(<span style=color:#e6db74>&#34;Data     :&#34;</span>, data)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_comment</span>(self, data):
+</span></span><span style=display:flex><span>        print(<span style=color:#e6db74>&#34;Comment  :&#34;</span>, data)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_entityref</span>(self, name):
+</span></span><span style=display:flex><span>        c <span style=color:#f92672>=</span> chr(name2codepoint[name])
+</span></span><span style=display:flex><span>        print(<span style=color:#e6db74>&#34;Named ent:&#34;</span>, c)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_charref</span>(self, name):
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> name<span style=color:#f92672>.</span>startswith(<span style=color:#e6db74>&#39;x&#39;</span>):
+</span></span><span style=display:flex><span>            c <span style=color:#f92672>=</span> chr(int(name[<span style=color:#ae81ff>1</span>:], <span style=color:#ae81ff>16</span>))
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>            c <span style=color:#f92672>=</span> chr(int(name))
+</span></span><span style=display:flex><span>        print(<span style=color:#e6db74>&#34;Num ent  :&#34;</span>, c)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_decl</span>(self, data):
+</span></span><span style=display:flex><span>        print(<span style=color:#e6db74>&#34;Decl     :&#34;</span>, data)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>parser <span style=color:#f92672>=</span> MyHTMLParser()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>parser<span style=color:#f92672>.</span>feed(<span style=color:#e6db74>&#39;&lt;img src=&#34;python-logo.png&#34; alt=&#34;The Python logo&#34;&gt;&#39;</span>)
+</span></span></code></pre></div><h1 id=爬虫入门>爬虫入门</h1><h2 id=抓取网页>抓取网页</h2><p>urllib is a package that collects several modules for working with URLs:</p><ul><li>urllib.request 打开和读取URLs</li><li>urllib.error 包含urllib.request产生的错误，可以使用try进行捕捉处理</li><li>urllib.parse 解析URLs</li><li>urllib.robotparser 解析robots.txt文本文件</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># -*- coding: UTF-8 -*-</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> urllib <span style=color:#f92672>import</span> request
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> chardet
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;__main__&#34;</span>:
+</span></span><span style=display:flex><span>    response <span style=color:#f92672>=</span> request<span style=color:#f92672>.</span>urlopen(<span style=color:#e6db74>&#34;https://www.baidu.com/&#34;</span>)
+</span></span><span style=display:flex><span>    html <span style=color:#f92672>=</span> response<span style=color:#f92672>.</span>read()
+</span></span><span style=display:flex><span>    charset <span style=color:#f92672>=</span> chardet<span style=color:#f92672>.</span>detect(html)
+</span></span><span style=display:flex><span>    print(charset)
+</span></span><span style=display:flex><span>    print(html)
+</span></span></code></pre></div><h2 id=beautifulsoup><a href=https://www.crummy.com/software/BeautifulSoup/bs4/doc/index.zh.html>BeautifulSoup</a></h2><p><code>Beautiful Soup</code> 是一个可以从HTML或XML文件中提取数据的Python库.它能够通过你喜欢的转换器实现惯用的文档导航,查找,修改文档的方式.Beautiful Soup会帮你节省数小时甚至数天的工作时间.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># coding=utf-8</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> requests
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> bs4 <span style=color:#f92672>import</span> BeautifulSoup
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 获取html文档</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_html</span>(url):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;get the content of the url&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    response <span style=color:#f92672>=</span> requests<span style=color:#f92672>.</span>get(url)
+</span></span><span style=display:flex><span>    response<span style=color:#f92672>.</span>encoding <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;utf-8&#39;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> response<span style=color:#f92672>.</span>text
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 获取最新的笑话</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_latest_joker</span>(html):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;get the last joke of the html&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    soup <span style=color:#f92672>=</span> BeautifulSoup(html, <span style=color:#e6db74>&#34;html.parser&#34;</span>)
+</span></span><span style=display:flex><span>    joke_content <span style=color:#f92672>=</span> soup<span style=color:#f92672>.</span>select(<span style=color:#e6db74>&#39;div.content&#39;</span>)[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>.</span>get_text()
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> joke_content
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 获取笑话</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_joke_contents</span>(html):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;get the joke of the html&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    joke_contents <span style=color:#f92672>=</span> []
+</span></span><span style=display:flex><span>    soup <span style=color:#f92672>=</span> BeautifulSoup(html, <span style=color:#e6db74>&#34;html.parser&#34;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> content <span style=color:#f92672>in</span> soup<span style=color:#f92672>.</span>select(<span style=color:#e6db74>&#39;div.content&#39;</span>):
+</span></span><span style=display:flex><span>        joke_contents<span style=color:#f92672>.</span>append(content<span style=color:#f92672>.</span>get_text())
+</span></span><span style=display:flex><span>    <span style=color:#75715e># joke_content = soup.select(&#39;div.content&#39;)[1].get_text()</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> joke_contents
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__<span style=color:#f92672>==</span><span style=color:#e6db74>&#34;__main__&#34;</span>:
+</span></span><span style=display:flex><span>    url_joke <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;https://www.qiushibaike.com&#34;</span>
+</span></span><span style=display:flex><span>    html <span style=color:#f92672>=</span> get_html(url_joke)
+</span></span><span style=display:flex><span>    joke_contents <span style=color:#f92672>=</span> get_latest_joker(html)
+</span></span><span style=display:flex><span>    print(joke_contents)
+</span></span></code></pre></div><h3 id=bs解析器>BS解析器</h3><table><thead><tr><th>解析器</th><th>使用方法</th><th>优势</th><th>劣势</th></tr></thead><tbody><tr><td>Python标准库</td><td>BeautifulSoup(markup, “html.parser”)</td><td>Python的内置标准库、执行速度适中、文档容错能力强</td><td>Python 2.7.3 or 3.2.2)前 的版本中文档容错能力差</td></tr><tr><td>BeautifulSoup(markup, “xml”)</td><td>BeautifulSoup(markup, “lxml”)</td><td>速度快、唯一支持XML的解析器</td><td>需要安装C语言库</td></tr><tr><td>html5lib</td><td>BeautifulSoup(markup, “html5lib”)</td><td>最好的容错性、以浏览器的方式解析文档、生成HTML5格式的文档</td><td>速度慢</td></tr></tbody></table><h1 id=爬虫框架>爬虫框架</h1><h2 id=scrapy><a href=https://scrapy.org/>Scrapy</a></h2><p>Scrapy，Python开发的一个快速,高层次的屏幕抓取和web抓取框架，用于抓取web站点并从页面中提取结构化的数据。Scrapy用途广泛，可以用于数据挖掘、监测和自动化测试。</p><h3 id=架构>架构</h3><p><img src=/res/img/spider/scrapy_architecture.png alt></p><ul><li><strong>引擎(Scrapy)</strong>
+用来处理整个系统的数据流处理, 触发事务(框架核心)</li><li><strong>调度器(Scheduler)</strong>
+用来接受引擎发过来的请求, 压入队列中, 并在引擎再次请求的时候返回. 可以想像成一个URL（抓取网页的网址或者说是链接）的优先队列, 由它来决定下一个要抓取的网址是什么, 同时去除重复的网址</li><li><strong>下载器(Downloader)</strong>
+用于下载网页内容, 并将网页内容返回给蜘蛛(Scrapy下载器是建立在twisted这个高效的异步模型上的)</li><li><strong>爬虫(Spiders)</strong>
+爬虫是主要干活的, 用于从特定的网页中提取自己需要的信息, 即所谓的实体(Item)。用户也可以从中提取出链接,让Scrapy继续抓取下一个页面</li><li><strong>项目管道(Pipeline)</strong>
+负责处理爬虫从网页中抽取的实体，主要的功能是持久化实体、验证实体的有效性、清除不需要的信息。当页面被爬虫解析后，将被发送到项目管道，并经过几个特定的次序处理数据。</li><li><strong>下载器中间件(Downloader Middlewares)</strong>
+位于Scrapy引擎和下载器之间的框架，主要是处理Scrapy引擎与下载器之间的请求及响应。</li><li><strong>爬虫中间件(Spider Middlewares)</strong>
+介于Scrapy引擎和爬虫之间的框架，主要工作是处理蜘蛛的响应输入和请求输出。</li><li><strong>调度中间件(Scheduler Middewares)</strong>
+介于Scrapy引擎和调度之间的中间件，从Scrapy引擎发送到调度的请求和响应。</li></ul><h3 id=运行流程>运行流程</h3><ol><li>引擎从调度器中取出一个链接(URL)用于接下来的抓取</li><li>引擎把URL封装成一个请求(Request)传给下载器</li><li>下载器把资源下载下来，并封装成应答包(Response)</li><li>爬虫解析Response</li><li>解析出实体（Item）,则交给实体管道进行进一步的处理</li><li>解析出的是链接（URL）,则把URL交给调度器等待抓取</li></ol><h3 id=教程>教程</h3><p>无他，<a href=https://docs.scrapy.org/en/latest/intro/tutorial.html>官网</a></p><h3 id=示例-1>示例</h3><p>爬取<code>有品质</code>的网站的数据相对简单（比如<code>知乎</code>、<code>51job</code>、<code>豆瓣</code>等等），它们的前端页面的元素的命名相对比较规范。大厂的页面反而好解析，而且网上有大量的实例，这里我们来爬取一些技术比较落后的网站，比如爬取<a href=https://newhouse.cnnbfdc.com/projects>宁波新楼盘数据</a>。</p><h4 id=步骤>步骤</h4><ol><li><p>创建工程： <code>scrapy startproject tutorial</code></p></li><li><p>创建爬虫:</p><pre tabindex=0><code>cd tutorial
+scrapy genspider nbnewhouse cnnbfdc.com
+</code></pre></li><li><p>爬取数据: <code>scrapy crawl nbnewhouse</code></p></li></ol><h4 id=scrapy-shell>scrapy shell</h4><p>可以在shell内分析网站，将xpath或css语句调试好。</p><pre tabindex=0><code>scrapy shell https://newhouse.cnnbfdc.com/projects
+&gt;&gt;&gt; response.xpath(&#34;//div[@class=&#39;views-row&#39;]&#34;)
+[]
+&gt;&gt;&gt; response.xpath(&#34;//div[@class=&#39;item-list&#39;]&#34;)
+[&lt;Selector xpath=&#34;//div[@class=&#39;item-list&#39;]&#34; data=&#39;&lt;div class=&#34;item-list&#34;&gt;&lt;ul class=&#34;faceta&#39;&gt;, &lt;Selector xpath=&#34;//div[@class=&#39;item-list&#39;]&#34; data=&#39;&lt;div class=&#34;item-list&#34;&gt;&lt;ul class=&#34;faceta&#39;&gt;, &lt;Selector xpath=&#34;//div[@class=&#39;item-list&#39;]&#34; data=&#39;&lt;div class=&#34;item-list&#34;&gt;&lt;ul class=&#34;faceta&#39;&gt;, &lt;Selector xpath=&#34;//div[@class=&#39;item-list&#39;]&#34; data=&#39;&lt;div class=&#34;item-list&#34;&gt;&lt;ul class=&#34;faceta&#39;&gt;, &lt;Selector xpath=&#34;//div[@class=&#39;item-list&#39;]&#34; data=&#39;&lt;div class=&#34;item-list&#34;&gt;&lt;ul class=&#34;search&#39;&gt;, &lt;Selector xpath=&#34;//div[@class=&#39;item-list&#39;]&#34; data=&#39;&lt;div class=&#34;item-list&#34;&gt;    &lt;ul&gt;         &#39;&gt;, &lt;Selector xpath=&#34;//div[@class=&#39;item-list&#39;]&#34; data=&#39;&lt;div class=&#34;item-list&#34;&gt;&lt;ul class=&#34;pager&#34;&#39;&gt;]
+&gt;&gt;&gt; response.xpath(&#34;//div[@class=&#39;item-list&#39;]&#34;)[5].css(&#39;li&#39;)
+[&lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-1 views-r&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-2 views-r&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-3 views-r&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-4 views-r&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-5 views-r&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-6 views-r&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-7 views-r&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-8 views-r&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-9 views-r&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-10 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-11 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-12 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-13 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-14 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-15 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-16 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-17 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-18 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-19 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-20 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-21 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-22 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-23 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-24 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-25 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-26 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-27 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-28 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-29 views-&#39;&gt;, &lt;Selector xpath=&#39;descendant-or-self::li&#39; data=&#39;&lt;li class=&#34;views-row views-row-30 views-&#39;&gt;]
+</code></pre><h4 id=code>code</h4><ul><li><p>items.py</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TutorialItem</span>(scrapy<span style=color:#f92672>.</span>Item):
+</span></span><span style=display:flex><span>    <span style=color:#75715e># define the fields for your item here like:</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># name = scrapy.Field()</span>
+</span></span><span style=display:flex><span>    name <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()
+</span></span><span style=display:flex><span>    href <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()
+</span></span><span style=display:flex><span>    lic <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()
+</span></span><span style=display:flex><span>    address <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()
+</span></span><span style=display:flex><span>    developer <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()
+</span></span><span style=display:flex><span>    type <span style=color:#f92672>=</span> scrapy<span style=color:#f92672>.</span>Field()
+</span></span></code></pre></div></li><li><p>nbnewhouse.py</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># -*- coding: utf-8 -*-</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> scrapy
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> ..items <span style=color:#f92672>import</span> TutorialItem
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>NbnewhouseSpider</span>(scrapy<span style=color:#f92672>.</span>Spider):
+</span></span><span style=display:flex><span>    name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;nbnewhouse&#39;</span>
+</span></span><span style=display:flex><span>    allowed_domains <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#39;cnnbfdc.com&#39;</span>]
+</span></span><span style=display:flex><span>    start_urls <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#39;http://cnnbfdc.com/&#39;</span>]
+</span></span><span style=display:flex><span>    base_url <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;https://newhouse.cnnbfdc.com/projects/&#39;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>start_requests</span>(self):
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        urls <span style=color:#f92672>=</span> []
+</span></span><span style=display:flex><span>        page <span style=color:#f92672>=</span> <span style=color:#ae81ff>6</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> range(page):
+</span></span><span style=display:flex><span>            urls<span style=color:#f92672>.</span>append(NbnewhouseSpider<span style=color:#f92672>.</span>base_url <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;projects?page=</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>&#39;</span> <span style=color:#f92672>%</span> i)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> url <span style=color:#f92672>in</span> urls:
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>yield</span> scrapy<span style=color:#f92672>.</span>Request(url<span style=color:#f92672>=</span>url, callback<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>parse)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>parse</span>(self, response):
+</span></span><span style=display:flex><span>        projects <span style=color:#f92672>=</span> response<span style=color:#f92672>.</span>xpath(<span style=color:#e6db74>&#34;//div[@class=&#39;group-right&#39;]&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> item <span style=color:#f92672>in</span> projects:
+</span></span><span style=display:flex><span>            tutorialItem <span style=color:#f92672>=</span> TutorialItem()
+</span></span><span style=display:flex><span>            tutorialItem[<span style=color:#e6db74>&#39;name&#39;</span>] <span style=color:#f92672>=</span> item<span style=color:#f92672>.</span>xpath(<span style=color:#e6db74>&#34;div/a/text()&#34;</span>)<span style=color:#f92672>.</span>extract()[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>.</span>strip()
+</span></span><span style=display:flex><span>            tutorialItem[<span style=color:#e6db74>&#39;href&#39;</span>] <span style=color:#f92672>=</span> item<span style=color:#f92672>.</span>xpath(<span style=color:#e6db74>&#39;div/a/@href&#39;</span>)<span style=color:#f92672>.</span>extract()[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>.</span>strip()
+</span></span><span style=display:flex><span>            tutorialItem[<span style=color:#e6db74>&#39;lic&#39;</span>] <span style=color:#f92672>=</span> item<span style=color:#f92672>.</span>xpath(<span style=color:#e6db74>&#34;div[2]/text()&#34;</span>)<span style=color:#f92672>.</span>extract()[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>.</span>strip()
+</span></span><span style=display:flex><span>            tutorialItem[<span style=color:#e6db74>&#39;address&#39;</span>] <span style=color:#f92672>=</span> item<span style=color:#f92672>.</span>xpath(<span style=color:#e6db74>&#34;div[3]/div/div[1]/span/text()&#34;</span>)<span style=color:#f92672>.</span>extract()[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>.</span>strip()
+</span></span><span style=display:flex><span>            tutorialItem[<span style=color:#e6db74>&#39;developer&#39;</span>] <span style=color:#f92672>=</span> item<span style=color:#f92672>.</span>xpath(<span style=color:#e6db74>&#34;div[3]/div/div[2]/span/text()&#34;</span>)<span style=color:#f92672>.</span>extract()[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>.</span>strip()
+</span></span><span style=display:flex><span>            tutorialItem[<span style=color:#e6db74>&#39;type&#39;</span>] <span style=color:#f92672>=</span> item<span style=color:#f92672>.</span>xpath(<span style=color:#e6db74>&#34;div&#34;</span>)[<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>]<span style=color:#f92672>.</span>xpath(<span style=color:#e6db74>&#39;text()&#39;</span>)<span style=color:#f92672>.</span>extract()
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>yield</span> tutorialItem
+</span></span></code></pre></div></li></ul><h1 id=charlotte><a href=https://github.com/LiZoRN/Charlotte>Charlotte</a></h1><p>爬虫框架</p><h2 id=安装>安装</h2><ul><li><p>数据库
+安装mysql,默认用户名密码:root/root，对应配置修改Charlotte下的setting.py的DATABASES。</p></li><li><p>安装库
+安装<a href=https://www.python.org/downloads/windows/>python3</a>,然后进入工程根目录，执行:</p><pre tabindex=0><code>git clone https://github.com/LiZoRN/Charlotte.git
+pip install -r requirements.txt
+</code></pre></li><li><p>迁移数据表</p><pre tabindex=0><code>python manage.py makemigrations
+python manage.py migrate
+</code></pre></li></ul><h2 id=爬取ip代理数据可选>爬取IP代理数据(可选)</h2><ul><li><p>cd 到 spiders/ProxyIp目录，命令行下执行：</p><p>scrapy crawl xici</p></li><li><p>cd 到 spiders/tools目录，清晰有效ip数据：</p><p>python proxyip.py</p></li></ul><h2 id=爬取宁波楼盘信息>爬取<a href=http://newhouse.cnnbfdc.com>宁波楼盘信息</a></h2><p>cd 到 spiders/newhouse目录，命令行下执行：</p><p><code>scrapy crawl nbnewhouse</code></p><h2 id=运行api服务>运行api服务</h2><p>运行服务：</p><p><code>python manage.py runserver</code></p><p>api接口如下：</p><p>获取新楼盘列表：api/newhouses/?page=2&amp;page_size=5</p><pre tabindex=0><code>
+{
+&#34;data&#34;: [
+    {
+        &#34;id&#34;: 768,
+        &#34;name&#34;: &#34;宁波金融服务中心北区E栋二期&#34;,
+        &#34;project_state&#34;: &#34;现房状态&#34;,
+        &#34;address&#34;: &#34;东至鼎泰路北至和济街南至规划路西至规划路&#34;,
+        &#34;districts&#34;: &#34;江东区&#34;,
+        &#34;created&#34;: &#34;2017-05-06T02:46:55.063256Z&#34;
+    },
+    {
+        &#34;id&#34;: 1024,
+        &#34;name&#34;: &#34;嘉恒广场(西区)&#34;,
+        &#34;project_state&#34;: &#34;现房状态&#34;,
+        &#34;address&#34;: &#34;江东区东部新城混合住用区C2-1地块&#34;,
+        &#34;districts&#34;: &#34;江东区&#34;,
+        &#34;created&#34;: &#34;2017-05-06T02:46:55.063256Z&#34;
+    }
+],
+&#34;page&#34;: 2,
+&#34;total&#34;: 799
+}
+</code></pre><pre tabindex=0><code>获取楼盘详情：api/newhouses/1/
+</code></pre><p>{
+“id”: 1,
+“name”: “万科云鹭湾Ⅱ-6地块二期”,
+“supervision_bank”: “中国建设银行股份有限公司宁波江北支行”,
+“supervision_acount”: “33101983736050512431”,
+“project_state”: “期房状态”,
+“address”: “”,
+“dev_company”: “宁波江北万科置业有限公司”,
+“license_authority”: “”,
+“sale_permit”: “商品房预售许可证”,
+“license_key”: “2016”,
+“online_saleable_area”: “24198.74”,
+“online_saleable_flats”: “450.00”,
+“saleable_area”: “372.24”,
+“saleable_flats”: “29.00”,
+“sold_area”: “23826.50”,
+“sold_flats”: “421.00”,
+“residential_area”: “0.00”,
+“residential_flats”: “0.00”,
+“sold_residential_area”: “21188.42”,
+“sold_residential_flats”: “214.00”,
+“reserve_area”: “0.00”,
+“reserve_flats”: “0.00”,
+“saleable_parking_amount”: “0.00”,
+“saleable_garage_amount”: “29.00”,
+“sold_avg_price”: “12234.12”,
+“districts”: “江北慈城”,
+“contact_phone”: “”,
+“remark”: “”,
+“created”: “2017-05-06T02:46:55.063256Z”
+}</p><h2 id=todolist>todolist</h2><h3 id=动态脚本>动态脚本</h3><h3 id=反爬虫>反爬虫</h3><h3 id=分布式>分布式</h3><h3 id=搜索引擎>搜索引擎</h3></div></article></main><footer class=footer><p>© 2026 Lizorn</p></footer></div></body></html>

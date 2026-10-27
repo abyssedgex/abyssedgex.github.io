@@ -1,0 +1,66 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>ubuntu docker镜像问题 — 山海炼物</title><meta name=description content="山海炼物 — 炼物成器，格物致知"><link rel=stylesheet href=/css/style.css><link rel=icon href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚒️</text></svg>"><link rel=preconnect href=https://fonts.googleapis.com><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel=stylesheet></head><body><div class=container><header class=header><nav class=nav><span class=nav-prompt>❯</span>
+<span class=nav-sep>~</span>
+<a class=site-title href=https://lizorn.com/>山海炼物</a>
+<span class=nav-links><a href=/about/>关于</a>
+<a href=/posts/>文章</a>
+<a href=/talks/>Talks</a>
+<a href=/projects/>项目</a></span></nav></header><main class=main><article class=post><h1 class=post-title>ubuntu docker镜像问题</h1><time class=post-date>2016-11-02</time><div class=post-content><h1 id=起因>起因</h1><p>emacs使用多年,发现spacemacs的配置还算符合胃口,于是想做一个基于Ubuntu16.04的Docker镜像,以后就可以带着这粒胶囊行走天下了.</p><p>没想到踩到一个坑…</p><p><em>Dockerfile:</em></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>RUN <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span> DEBIAN_FRONTEND<span style=color:#f92672>=</span>noninteractive apt-get update <span style=color:#f92672>&amp;&amp;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span> DEBIAN_FRONTEND<span style=color:#f92672>=</span>noninteractive apt-get -y install wget curl git emacs<span style=color:#f92672>&amp;&amp;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span> DEBIAN_FRONTEND<span style=color:#f92672>=</span>noninteractive apt-get -y autoremove <span style=color:#f92672>&amp;&amp;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span> DEBIAN_FRONTEND<span style=color:#f92672>=</span>noninteractive git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d <span style=color:#f92672>&amp;&amp;</span> <span style=color:#ae81ff>\
+</span></span></span></code></pre></div><p>镜像build完成,启动emacs报错:
+<code>Debugger entered--Lisp error:(Wrong-type-argument stringp nil)</code></p><p>打开<code>--debug-info</code>进行调试,出错的堆栈信息如下:</p><pre tabindex=0><code>string-match(&#34;\\(fish\\|t?csh\\)$&#34; nil)
+exec-path-from-shell--standard-shell-p(nil)
+exec-path-from-shell-printf(&#34;%S\\000%s&#34; (&#34;${PATH-ad3306701bb5eb9f528b5c1b34485248}&#34; &#34;${MANPYTHON-ad3306701bb5eb9f528b5c1b34485248}&#34;))
+exec-path-from-shell-getenvs((&#34;PATH&#34; &#34;MANPATH&#34;))
+exec-path-from-shell-copy-envs((&#34;PATH&#34; &#34;MANPATH&#34;))
+exec-path-from-shell-initialize()
+(progn (exec-path-from-shell-initialize))
+...
+</code></pre><h1 id=分析>分析</h1><p>Emacs本质上是个操作系统,它有自己的环境变量.</p><p>所以为了让它可以使用宿主的<code>shell</code>,首先需要确保宿主和Emacs自身环境变量的一致性.</p><p><code>exec-path-from-shell</code> 就是一这么个<code>GNU Emacs</code>库,它将宿主的关键<code>SHELL</code>环境复制到EMACS的环境变量里,从而确保Emacs可以正常调用宿主机的<code>BASH</code>.</p><p>查看<code>exec-path-from-shell-printf</code>的代码:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-lisp data-lang=lisp><span style=display:flex><span>(defun exec-path-from-shell-printf (str <span style=color:#66d9ef>&amp;optional</span> args)
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;Return the result of printing STR in the user&#39;s shell.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  Executes $SHELL as interactive login shell.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  STR is inserted literally in a single-quoted argument to printf,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  and may therefore contain backslashed escape sequences understood
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  by printf.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  ARGS is an optional list of args which will be inserted by printf
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  in place of any % placeholders in STR.  ARGS are not automatically
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  shell-escaped, so they may contain $ etc.&#34;</span>
+</span></span><span style=display:flex><span>  (<span style=color:#66d9ef>let*</span> ((printf-bin (or (executable-find <span style=color:#e6db74>&#34;printf&#34;</span>) <span style=color:#e6db74>&#34;printf&#34;</span>))
+</span></span><span style=display:flex><span>         (printf-command
+</span></span><span style=display:flex><span>          (concat printf-bin
+</span></span><span style=display:flex><span>                  <span style=color:#e6db74>&#34; &#39;__RESULT\\000&#34;</span> str <span style=color:#e6db74>&#34;&#39; &#34;</span>
+</span></span><span style=display:flex><span>                  (mapconcat <span style=color:#a6e22e>#&#39;</span>exec-path-from-shell--double-quote args <span style=color:#e6db74>&#34; &#34;</span>)))
+</span></span><span style=display:flex><span>         (shell-args (<span style=color:#a6e22e>append</span> exec-path-from-shell-arguments
+</span></span><span style=display:flex><span>                             (<span style=color:#a6e22e>list</span> <span style=color:#e6db74>&#34;-c&#34;</span>
+</span></span><span style=display:flex><span>                                   (<span style=color:#66d9ef>if</span> (exec-path-from-shell--standard-shell-p (getenv <span style=color:#e6db74>&#34;SHELL&#34;</span>))
+</span></span><span style=display:flex><span>                                       printf-command
+</span></span><span style=display:flex><span>                                     (concat <span style=color:#e6db74>&#34;sh -c &#34;</span> (shell-quote-argument printf-command))))))
+</span></span><span style=display:flex><span>         (shell (getenv <span style=color:#e6db74>&#34;SHELL&#34;</span>)))
+</span></span></code></pre></div><p>结合出错堆栈分析,问题基本可以定位,即: <code>(getenv "SHELL")</code>去获取”SHELL”的环境变量,返回为空.</p><p>接着来查看<code>getenv</code>方法,它通过调用<code>getenv-internal</code>用来获取系统<code>environment</code>的变量.</p><p>查看系统环境变量,<code>env|grep SHELL</code>,果然无值.</p><p>那么只需要设置Docker-Ubuntu16.04容器的<code>SHELL</code>环境变量到<code>env</code>里就可以了.</p><pre tabindex=0><code>echo &#34;export SHELL=/bin/bash&#34; &gt;&gt; ~/.bashrc
+source ~/.bashrc
+</code></pre><p>运行<code>emacs</code>,问题解决.
+此时Dockerfile可以配置如下:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>...
+</span></span><span style=display:flex><span>RUN <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span> DEBIAN_FRONTEND<span style=color:#f92672>=</span>noninteractive apt-get update <span style=color:#f92672>&amp;&amp;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span> DEBIAN_FRONTEND<span style=color:#f92672>=</span>noninteractive apt-get -y install wget curl git emacs<span style=color:#f92672>&amp;&amp;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span> DEBIAN_FRONTEND<span style=color:#f92672>=</span>noninteractive apt-get -y autoremove <span style=color:#f92672>&amp;&amp;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span> DEBIAN_FRONTEND<span style=color:#f92672>=</span>noninteractive git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d <span style=color:#f92672>&amp;&amp;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span> DEBIAN_FRONTEND<span style=color:#f92672>=</span>noninteractive echo <span style=color:#e6db74>&#34;export SHELL=/bin/bash&#34;</span> &gt;&gt; ~/.bashrc <span style=color:#f92672>&amp;&amp;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span> ...
+</span></span></code></pre></div><h1 id=疑问>疑问</h1><p>为什么官方Ubuntu Docker镜像没有将SHELL加到环境变量里?</p><ol><li><p>有一点很明确,Docker不同于虚拟机,它的镜像文件确实需要保持精简,只需为容器保留必要的linux核心功能就可以了.</p><p>Docker官方也给出了,<code>-env</code>的选项命令,用于自行进行环境变量配置.
+在Dockerfile中也可以使用<code>ENV</code>进行环境变量的配置,我们的Dockerfile可以写成如下的形式.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>...
+</span></span><span style=display:flex><span>RUN <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span> ...
+</span></span><span style=display:flex><span> DEBIAN_FRONTEND<span style=color:#f92672>=</span>noninteractive ENV SHELL /bin/bash
+</span></span><span style=display:flex><span> ...
+</span></span></code></pre></div></li><li><p>那么,这个Docker镜像连<code>$SHELL</code>,<code>$BASH</code>等环境变量都省略了,是否还有其他功能被阉割了呢?</p><p>确实是的,问题还很多.</p><p>比如Docker下的ubuntu有一个很大的问题,它的<code>PID1</code>是<code>bash</code>!</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>root@0d9e754629e0:/# ps
+</span></span><span style=display:flex><span>  PID TTY          TIME CMD
+</span></span><span style=display:flex><span>    <span style=color:#ae81ff>1</span> ?        00:00:00 bash
+</span></span><span style=display:flex><span>   <span style=color:#ae81ff>37</span> ?        00:00:00 ps
+</span></span></code></pre></div><p>而完整的系统应该是<code>init</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>lizorn@lizorn:/etc$ ps aux
+</span></span><span style=display:flex><span>USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span style=display:flex><span>root         <span style=color:#ae81ff>1</span>  0.0  0.0 <span style=color:#ae81ff>185604</span>  <span style=color:#ae81ff>6388</span> ?        Ss   10:39   0:01 /sbin/init splash
+</span></span><span style=display:flex><span>root         <span style=color:#ae81ff>2</span>  0.0  0.0      <span style=color:#ae81ff>0</span>     <span style=color:#ae81ff>0</span> ?        S    10:39   0:00 <span style=color:#f92672>[</span>kthreadd<span style=color:#f92672>]</span>
+</span></span></code></pre></div><p><code>PID1 init</code>是系统所有进程的祖先,同时它还负责接收和处理僵尸进程,<a href=https://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/>the PID 1 zombie reaping problem</a>.</p><p>这个问题会导致docker-ubuntu系统有可能产生无法回收的僵尸进程,造成内存孤岛,浪费系统性能.需要额外的补丁程序来完成<code>PID1</code>任务的回收工作,修复该问题的轮子已经具备,你可以直接使用<a href=https://github.com/phusion/baseimage-docker>phusion的baseimage</a>来制作Docker基础镜像文件.</p></li></ol><h1 id=附录-linux-环境变量>附录: linux 环境变量</h1><h2 id=shell变量用户变量>shell变量&用户变量</h2><ul><li>set:显示当前shell的变量</li><li>env:显示当前用户的环境变量</li><li>export可将当前shell变量导出成用户变量.</li></ul><p><code>set</code>下的环境变量不等同于<code>env</code>下的用户变量,两者是有区分的,因为一个用户可以有多个<code>SHELL</code>,如<code>fish</code>,<code>tsh</code>等.</p><h2 id=linux-shell环境初始化流程>linux shell环境初始化流程</h2><p>Linux系统登录，<code>bash</code>其初始化过程依次加载如下文件(文件不存在就跳过):</p><p><code>/etc/profile</code>-><code>/etc/profile.d</code>~<code>/.bash_profile</code>-><code>~/.bashrc</code>-><code>~/.bash_logout</code></p><ul><li>/etc/profile: 系统级用户环境变量.当用户第一次登录时,该文件被加载.设置命令行提示符<code>$PS</code>,并从/etc/profile.d目录的配置文件中搜集shell的设置.</li><li>/etc/bashrc: 系统级用户环境变量.当bash shell被打开时加载.</li><li>~/.bash_profile: 用户级环境变量.用户登录时加载,默认情况下,他设置一些环境变量,执行用户的.bashrc文件.</li><li>~/.bashrc: 用户级环境变量.该文件包含专用于你的bash shell的bash信息,当登录时以及每次打开新的shell时加载该文件.</li><li>~/.bash_logout:当每次退出系统(退出bash shell)时执行该文件.</li></ul></div></article></main><footer class=footer><p>© 2026 Lizorn</p></footer></div></body></html>

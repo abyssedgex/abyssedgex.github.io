@@ -1,0 +1,155 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>区块链导论:以太坊（Ethereum） — 山海炼物</title><meta name=description content="山海炼物 — 炼物成器，格物致知"><link rel=stylesheet href=/css/style.css><link rel=icon href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚒️</text></svg>"><link rel=preconnect href=https://fonts.googleapis.com><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel=stylesheet></head><body><div class=container><header class=header><nav class=nav><span class=nav-prompt>❯</span>
+<span class=nav-sep>~</span>
+<a class=site-title href=https://lizorn.com/>山海炼物</a>
+<span class=nav-links><a href=/about/>关于</a>
+<a href=/posts/>文章</a>
+<a href=/talks/>Talks</a>
+<a href=/projects/>项目</a></span></nav></header><main class=main><article class=post><h1 class=post-title>区块链导论:以太坊（Ethereum）</h1><time class=post-date>2018-05-22</time><div class=post-content><p>以太坊（Ethereum）是一个开源的有智能合约功能的公共区块链平台。通过其专用加密货币以太币（Ether）提供去中心化的虚拟机（“以太虚拟机” Ethereum Virtual Machine）来处理点对点合约。</p><p>关于以太坊（Ethereum）的概念网上有很多资料可以查询，本文只上干货，主要目的如下：</p><ol><li>搭建<code>Ethereum</code>的开发环境</li><li>熟悉Ethereum DAPP开发框架:<code>Truffle</code></li><li>Truffle DAPP开发和调试</li></ol><h1 id=以太坊开发环境搭建>以太坊开发环境搭建</h1><p>安装区块链仿真环境(<a href=http://truffleframework.com/ganache/>ganache</a>)、<code>solidity编译器</code>、<code>web3</code>、<code>truffle</code>。</p><pre tabindex=0><code>npm install -g ganache-cli solc web3 truffle
+</code></pre><h2 id=ide>IDE</h2><ul><li>Atom</li></ul><p>安装<code>linter-solidity</code>插件。</p><pre tabindex=0><code>$ apm install linter
+$ apm install linter-solidity
+</code></pre><ul><li>ethereum客户端
+这里使用<a href=https://github.com/MetaMask/metamask-extension/releases>Metamask</a>,下载对应的浏览器版本，安装到浏览器的插件里。</li></ul><p>选择<code>Custom RPC</code>加入本地<code>ganche私有链</code>-“<a href=http://127.0.0.1:7545%22%E3%80%82>http://127.0.0.1:7545"。</a></p><h2 id=开启环境>开启环境</h2><ul><li>开启仿真环境ganache</li></ul><p><img src=/res/img/blockchain/ganche.png alt></p><ul><li>metamask连接私有链
+<code>Customer Rpc</code> -> <code>http://127.0.0.1:7545</code>
+<img src=/res/img/blockchain/mentamask.png alt></li></ul><h1 id=truffle>Truffle</h1><p>Truffle是一个世界级的开发环境，测试框架，以太坊的资源管理通道，致力于让以太坊上的开发变得简单，Truffle有以下功能：</p><ul><li>内置的智能合约编译，链接，部署和二进制文件的管理。</li><li>快速开发下的自动合约测试。</li><li>脚本化的，可扩展的部署与发布框架。</li><li>部署到不管多少的公网或私网的网络环境管理功能</li><li>使用EthPM&amp;NPM提供的包管理，使用ERC190标准。</li><li>与合约直接通信的直接交互控制台（写完合约就可以命令行里验证了）。</li><li>可配的构建流程，支持紧密集成。</li><li>在Truffle环境里支持执行外部的脚本。</li></ul><h2 id=truffle-开发部署合约>Truffle 开发部署合约</h2><ol><li>创建工程</li></ol><pre tabindex=0><code>mkdir fibonacci
+cd fibonacci
+truffle init
+</code></pre><p>工程目录结构如下：
+<code>app/</code> - 你的应用文件运行的默认目录。这里面包括推荐的javascript文件和css样式文件目录，但你可以完全决定如何使用这些目录。
+<code>contract/</code> - Truffle默认的合约文件存放地址。
+<code>migrations/</code> - 存放发布脚本文件
+<code>test/</code> - 用来测试应用和合约的测试文件
+<code>truffle.js</code> - Truffle的配置文件</p><ol><li>编写一个基础智能合约</li></ol><p>创建一个合约<code>contracts/Fibonacci.sol</code>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#a6e22e>pragma</span> <span style=color:#a6e22e>solidity</span> <span style=color:#f92672>^</span><span style=color:#ae81ff>0.4</span>.<span style=color:#ae81ff>22</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>contract</span> <span style=color:#a6e22e>Fibonacci</span> {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>uint</span>[] <span style=color:#a6e22e>fibseries</span>;
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// n = how many in the series to return
+</span></span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>generateFib</span>(<span style=color:#a6e22e>uint</span> <span style=color:#a6e22e>n</span>) <span style=color:#66d9ef>public</span> {
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// set 1st and 2nd entries
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>fibseries</span>.<span style=color:#a6e22e>push</span>(<span style=color:#ae81ff>1</span>);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>fibseries</span>.<span style=color:#a6e22e>push</span>(<span style=color:#ae81ff>1</span>);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// generate subsequent entries
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> (<span style=color:#a6e22e>uint</span> <span style=color:#a6e22e>i</span><span style=color:#f92672>=</span><span style=color:#ae81ff>2</span>; <span style=color:#a6e22e>i</span> <span style=color:#f92672>&lt;</span> <span style=color:#a6e22e>n</span> ; <span style=color:#a6e22e>i</span><span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>fibseries</span>.<span style=color:#a6e22e>push</span>(<span style=color:#a6e22e>fibseries</span>[<span style=color:#a6e22e>i</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>] <span style=color:#f92672>+</span> <span style=color:#a6e22e>fibseries</span>[<span style=color:#a6e22e>i</span><span style=color:#f92672>-</span><span style=color:#ae81ff>2</span>]);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><code>generateFib</code>:生成<code>Fibonacci（斐波纳契）</code>数列，公式<code>fib(n)=fib(n-1)+fib(n-2)</code>。</p><ol><li>创建一个新的部署文件<code>migrations/2_deploy_contracts.js</code>。</li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>Fibonacci</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>artifacts</span>.<span style=color:#a6e22e>require</span>(<span style=color:#e6db74>&#34;Fibonacci&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>module</span>.<span style=color:#a6e22e>exports</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>deployer</span>) {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>deployer</span>.<span style=color:#a6e22e>deploy</span>(<span style=color:#a6e22e>Fibonacci</span>);
+</span></span><span style=display:flex><span>};
+</span></span></code></pre></div><ol><li><p>启动<code>Ganache</code></p></li><li><p>修改工程目录下的<code>truffle.js</code></p></li></ol><pre tabindex=0><code>module.exports = {
+  networks: {
+    development: {
+      host: &#34;127.0.0.1&#34;,
+      port: 7545,
+      network_id: &#34;*&#34;
+    }
+  }
+};
+</code></pre><ol><li><p>编译并植入合约</p><pre tabindex=0><code>truffle compile
+truffle migrate
+
+Using network &#39;development&#39;.
+
+Running migration: 1_initial_migration.js
+  Deploying Migrations...
+  ... 0x97f35c60501091e10315febe0d2f1d8a59cb413c38cc7c2b3538263a7c67d0bf
+  Migrations: 0xf7f433a4a2f9bf3f364bb96abe6a07778a61e095
+Saving successful migration to network...
+  ... 0x17b700e3a580ddd28d7bb7110c33f5a8c94b8875c99138d466f8625056a47cd9
+Saving artifacts...
+Running migration: 2_deploy_contracts.js
+  Deploying Fibonacci...
+  ... 0xd1f02be04a76df173456b48777d740f65248cd5870c4e22c058cc6f658dc2f9e
+  Fibonacci: 0xc9554c5818dac7e79dc398d85c4789b90618c5b7
+Saving successful migration to network...
+  ... 0xb987be952d829ca21a909e2f558abdae84cf6afe0c83c2070ab2ba8319f79672
+Saving artifacts...
+</code></pre></li></ol><h2 id=console-debug>console debug</h2><p>我们可以直接使用<a href=http://remix.ethereum.org>remix ide</a>，调试非常的方便。
+这里我们虐一下自己，使用<code>Truffle Console</code>来进行调试。</p><ol><li><p>进入console</p><p><code>truffle console</code></p></li><li><p>调用合约</p><pre tabindex=0><code>truffle(development)&gt; Fibonacci.deployed().then(function(instance){return instance.generateFib(10);});
+{ tx: &#39;0x0d10a3f875548131fdad0a27f916af5575fcf6ee47085e9d625d695eb2c11583&#39;,
+  receipt:
+   { transactionHash: &#39;0x0d10a3f875548131fdad0a27f916af5575fcf6ee47085e9d625d695eb2c11583&#39;,
+     transactionIndex: 0,
+     blockHash: &#39;0x7596a7239811b8586a2c60a9fad19d41ea8bb3be46e8ed3b8ebbfaf4c477b707&#39;,
+     blockNumber: 5,
+     gasUsed: 298373,
+     cumulativeGasUsed: 298373,
+     contractAddress: null,
+     logs: [],
+     status: &#39;0x01&#39;,
+     logsBloom: &#39;0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&#39; },
+  logs: [] }
+</code></pre></li><li><p>调试<code>transaction</code></p><ol><li><p>先attache一条<code>transaction</code>，id为<code>transactionHash</code>值。</p><pre tabindex=0><code>truffle(development)&gt; debug 0x0d10a3f875548131fdad0a27f916af5575fcf6ee47085e9d625d695eb2c11583
+Compiling ./contracts/Fibonacci.sol...
+Compiling ./contracts/Migrations.sol...
+
+Gathering transaction data...
+
+Addresses affected:
+ 0xc9554c5818dac7e79dc398d85c4789b90618c5b7 - Fibonacci
+
+Commands:
+(enter) last command entered (step next)
+(o) step over, (i) step into, (u) step out, (n) step next
+(;) step instruction, (p) print instruction, (h) print this help, (q) quit
+(b) toggle breakpoint, (c) continue until breakpoint
+(+) add watch expression (`+:&lt;expr&gt;`), (-) remove watch expression (-:&lt;expr&gt;)
+(?) list existing watch expressions
+(v) print variables and values, (:) evaluate expression - see `v`
+</code></pre><p>Commands即为调试命令行。</p></li><li><p>watch（<code>+:</code>）变量,按<code>n</code>逐行进行跟踪。</p><pre tabindex=0><code>debug(development:0x0d10a3f8...)&gt; +:i
+8
+debug(development:0x0d10a3f8...)&gt; +:fibseries
+[ 1, 1, 2, 3, 5, 8, 13, 21 ]
+debug(development:0x0d10a3f8...)&gt; n
+
+Fibonacci.sol:
+
+14:     // generate subsequent entries
+15:     for (uint i=2; i &lt; n ; i++) {
+16:       fibseries.push(fibseries[i-1] + fibseries[i-2]);
+                                     ^
+
+:i
+  8
+
+:fibseries
+  [ 1, 1, 2, 3, 5, 8, 13, 21 ]
+</code></pre></li></ol></li><li><p>异常信息调试</p><ol><li><p>修改以下合约代码</p><pre tabindex=0><code>...
+for (uint i=1; i &lt; n ; i++) {
+...
+</code></pre></li><li><p>重新编译部署合约</p><pre tabindex=0><code>debug(development:0x65bb45af...)&gt; compile --all
+
+Transaction completed successfully.
+truffle(development)&gt; migrate --reset
+Compiling ./contracts/Fibonacci.sol...
+Writing artifacts to ./build/contracts
+
+Using network &#39;development&#39;.
+
+Running migration: 1_initial_migration.js
+  Replacing Migrations...
+  ... 0x26fdc5c20b9f44e96e537e0b8474f867d7bd7d27ad7172b004c858d2dceb6f99
+  Migrations: 0xd0ea55247c6035375c6e284a60946cd35550ced2
+Saving successful migration to network...
+  ... 0x0ad76d3073b05161327fc1f7dbd1c521360c305af872ff12b7f59befb73dfbd2
+Saving artifacts...
+Running migration: 2_deploy_contracts.js
+  Replacing Fibonacci...
+  ... 0x93ee91146a3a5fd23dad1e77249870c0edeb5cf6cd78cb7c9db6aab24f538634
+  Fibonacci: 0x090b1fd13ee19ec7f8f3175ca54d5165a443c694
+Saving successful migration to network...
+  ... 0xbeb0d613fa72c67ecf720833a4985244a91b0d0dea1c36fc23195e00e7fd8c18
+Saving artifacts...
+truffle(development)&gt; Fibonacci.deployed().then(function(instance){return instance.generateFib(10);});
+Error: VM Exception while processing transaction: invalid opcode
+    at XMLHttpRequest._onHttpResponseEnd (/home/lizorn/.nvm/versions/node/v10.0.0/lib/node_modules/truffle/build/webpack:/~/xhr2/lib/xhr2.js:509:1)
+    at XMLHttpRequest._setReadyState (/home/lizorn/.nvm/versions/node/v10.0.0/lib/node_modules/truffle/build/webpack:/~/xhr2/lib/xhr2.js:354:1)
+    at XMLHttpRequestEventTarget.dispatchEvent (/home/lizorn/.nvm/versions/node/v10.0.0/lib/node_modules/truffle/build/webpack:/~/xhr2/lib/xhr2.js:64:1)
+    at XMLHttpRequest.request.onreadystatechange (/home/lizorn/.nvm/versions/node/v10.0.0/lib/node_modules/truffle/build/webpack:/~/web3/lib/web3/httpprovider.js:128:1)
+    at /home/lizorn/.nvm/versions/node/v10.0.0/lib/node_modules/truffle/build/webpack:/~/truffle-provider/wrapper.js:134:1
+    at /home/lizorn/.nvm/versions/node/v10.0.0/lib/node_modules/truffle/build/webpack:/~/web3/lib/web3/requestmanager.js:86:1
+    at Object.InvalidResponse (/home/lizorn/.nvm/versions/node/v10.0.0/lib/node_modules/truffle/build/webpack:/~/web3/lib/web3/errors.js:38:1)
+</code></pre></li><li><p>此处由于数组越界，控制窗口并没有返回transaction的ID，我们可以通过查看<code>Ganache</code>的<code>Logs</code>，找到对应的<code>Transaction</code>，然后按之前的方式进行调试。</p></li></ol></li></ol></div></article></main><footer class=footer><p>© 2026 Lizorn</p></footer></div></body></html>

@@ -1,0 +1,420 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>区块链导论:以太坊DAPP（投票应用） — 山海炼物</title><meta name=description content="山海炼物 — 炼物成器，格物致知"><link rel=stylesheet href=/css/style.css><link rel=icon href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚒️</text></svg>"><link rel=preconnect href=https://fonts.googleapis.com><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel=stylesheet></head><body><div class=container><header class=header><nav class=nav><span class=nav-prompt>❯</span>
+<span class=nav-sep>~</span>
+<a class=site-title href=https://lizorn.com/>山海炼物</a>
+<span class=nav-links><a href=/about/>关于</a>
+<a href=/posts/>文章</a>
+<a href=/talks/>Talks</a>
+<a href=/projects/>项目</a></span></nav></header><main class=main><article class=post><h1 class=post-title>区块链导论:以太坊DAPP（投票应用）</h1><time class=post-date>2018-05-22</time><div class=post-content><h1 id=投票dapp>投票DAPP</h1><h2 id=投票智能合约>投票智能合约</h2><ul><li>contracts/Voting.sol</li></ul><pre tabindex=0><code>pragma solidity ^0.4.18;
+// We have to specify what version of compiler this code will compile with
+
+contract Voting {
+  /* mapping field below is equivalent to an associative array or hash.
+  The key of the mapping is candidate name stored as type bytes32 and value is
+  an unsigned integer to store the vote count
+  */
+
+  mapping (bytes32 =&gt; uint8) public votesReceived;
+
+  /* Solidity doesn&#39;t let you pass in an array of strings in the constructor (yet).
+  We will use an array of bytes32 instead to store the list of candidates
+  */
+
+  bytes32[] public candidateList;
+
+  /* This is the constructor which will be called once when you
+  deploy the contract to the blockchain. When we deploy the contract,
+  we will pass an array of candidates who will be contesting in the election
+  */
+  function Voting(bytes32[] candidateNames) public {
+    candidateList = candidateNames;
+  }
+
+  // This function returns the total votes a candidate has received so far
+  function totalVotesFor(bytes32 candidate) view public returns (uint8) {
+    require(validCandidate(candidate));
+    return votesReceived[candidate];
+  }
+
+  // This function increments the vote count for the specified candidate. This
+  // is equivalent to casting a vote
+  function voteForCandidate(bytes32 candidate) public {
+    require(validCandidate(candidate));
+    votesReceived[candidate] += 1;
+  }
+
+  function validCandidate(bytes32 candidate) view public returns (bool) {
+    for(uint i = 0; i &lt; candidateList.length; i++) {
+      if (candidateList[i] == candidate) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+</code></pre><h2 id=使用node-console调试合约>使用node console调试合约</h2><p>打开<code>ganche</code>，使用<code>web3</code>交互。</p><pre tabindex=0><code>➜  chapter1 git:(master) ✗ node
+&gt; Web3 = require(&#39;web3&#39;)
+{ [Function: Web3]
+  providers:
+   { HttpProvider: [Function: HttpProvider],
+     IpcProvider: [Function: IpcProvider] } }
+&gt; web3 = new Web3(new Web3.providers.HttpProvider(&#34;http://localhost:7545&#34;));
+</code></pre><p>查看区块账号</p><pre tabindex=0><code>&gt; web3.eth.accounts
+[ &#39;0x2fa9da84494be487126a2d96794a69c904acdf17&#39;,
+  &#39;0xfbdb68208934c62e78f7e88089f47d0074298a58&#39;,
+  &#39;0x7fbc15bdc47cae7a6f23f854480053b3f63e8783&#39;,
+  &#39;0x2606d31e26b07f7077971810c8f16ed242969f9d&#39;,
+  &#39;0x90b1320cca7320d914a8cf7a04648ac7ebfcfe66&#39;,
+  &#39;0xd5a5a2f92f88f9ec4e3329200fa2f355e83af553&#39;,
+  &#39;0xb7765e9be2577c73ffe6e87843a3290781b87298&#39;,
+  &#39;0xda22e32e230554fbd33541b0187a9071430dbbf6&#39;,
+  &#39;0x8761a81d0e30ab8117e33e741f1b0ddfdb1b000a&#39;,
+  &#39;0x00448bbe603ab4ceb215b9169f7c4f0118aa7896&#39; ]
+</code></pre><p>读取并编译智能合约</p><pre tabindex=0><code>&gt; code = fs.readFileSync(&#39;Voting.sol&#39;).toString()
+&gt; solc = require(&#39;solc&#39;)
+&gt; compiledCode = solc.compile(code)
+</code></pre><p>部署智能合约</p><pre tabindex=0><code>&gt; abiDefinition = JSON.parse(compiledCode.contracts[&#39;:Voting&#39;].interface)
+&gt; VotingContract = web3.eth.contract(abiDefinition)
+&gt; byteCode = compiledCode.contracts[&#39;:Voting&#39;].bytecode
+&gt; deployedContract = VotingContract.new([&#39;Rama&#39;,&#39;Nick&#39;,&#39;Jose&#39;],{data: byteCode, from: web3.eth.accounts[0], gas: 4700000})
+&gt; contractInstance = VotingContract.at(deployedContract.address)
+</code></pre><pre tabindex=0><code>- compiledCode.contracts[‘:Voting’].bytecode: 合约二进制代码，用于部署到区块链中.
+- compiledCode.contracts[‘:Voting’].interface: 智能合约接口模板(abi)，告诉合约用户可使用的接口.
+</code></pre><p>调用合约方法</p><pre tabindex=0><code>&gt; contractInstance.totalVotesFor.call(&#39;Rama&#39;)
+BigNumber { s: 1, e: 0, c: [ 0 ] }
+&gt;
+&gt; contractInstance.voteForCandidate(&#39;Rama&#39;, {from: web3.eth.accounts[0]})
+&#39;0xb78beb95dce55f946fe9d3bbe06f3ed588749e2714fa2834e4f0a59f6a2d55d6&#39;
+&gt; contractInstance.voteForCandidate(&#39;Rama&#39;, {from: web3.eth.accounts[0]})
+&#39;0xf0b6291f6eca6e6d314e0c246ec863e74506656c5da70a88f583f80be9dc119b&#39;
+&gt; contractInstance.totalVotesFor.call(&#39;Rama&#39;).toLocaleString()
+&#39;2&#39;
+</code></pre><blockquote><p><code>0xb78beb95dce55f946fe9d3bbe06f3ed588749e2714fa2834e4f0a59f6a2d55d6</code>是每一次交易发生的<code>transaction id</code></p></blockquote><h2 id=前端页面>前端页面</h2><ul><li><p>index.html</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>title</span>&gt;Hello World DApp&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>link</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;https://fonts.googleapis.com/css?family=Open+Sans:400,700&#39;</span> <span style=color:#a6e22e>rel</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;stylesheet&#39;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;text/css&#39;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>link</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&#39;</span> <span style=color:#a6e22e>rel</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;stylesheet&#39;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;text/css&#39;</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;container&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>h1</span>&gt;A Simple Hello World Voting Application&lt;/<span style=color:#f92672>h1</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;table-responsive&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>table</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;table table-bordered&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>thead</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>th</span>&gt;Candidate&lt;/<span style=color:#f92672>th</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>th</span>&gt;Votes&lt;/<span style=color:#f92672>th</span>&gt;
+</span></span><span style=display:flex><span>        &lt;/<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>thead</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>tbody</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>td</span>&gt;Rama&lt;/<span style=color:#f92672>td</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>td</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;candidate-1&#34;</span>&gt;&lt;/<span style=color:#f92672>td</span>&gt;
+</span></span><span style=display:flex><span>        &lt;/<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>td</span>&gt;Nick&lt;/<span style=color:#f92672>td</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>td</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;candidate-2&#34;</span>&gt;&lt;/<span style=color:#f92672>td</span>&gt;
+</span></span><span style=display:flex><span>        &lt;/<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>td</span>&gt;Jose&lt;/<span style=color:#f92672>td</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>td</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;candidate-3&#34;</span>&gt;&lt;/<span style=color:#f92672>td</span>&gt;
+</span></span><span style=display:flex><span>        &lt;/<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>tbody</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>table</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>input</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;candidate&#34;</span> /&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;#&#34;</span> <span style=color:#a6e22e>onclick</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;voteForCandidate()&#34;</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-primary&#34;</span>&gt;Vote&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>script</span> <span style=color:#a6e22e>src</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js&#34;</span>&gt;&lt;/<span style=color:#f92672>script</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>script</span> <span style=color:#a6e22e>src</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;https://code.jquery.com/jquery-3.1.1.slim.min.js&#34;</span>&gt;&lt;/<span style=color:#f92672>script</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>script</span> <span style=color:#a6e22e>src</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;./index.js&#34;</span>&gt;&lt;/<span style=color:#f92672>script</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div></li><li><p>index.js</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#a6e22e>web3</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Web3</span>(<span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Web3</span>.<span style=color:#a6e22e>providers</span>.<span style=color:#a6e22e>HttpProvider</span>(<span style=color:#e6db74>&#34;http://localhost:7545&#34;</span>));
+</span></span><span style=display:flex><span><span style=color:#a6e22e>abi</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>JSON</span>.<span style=color:#a6e22e>parse</span>(<span style=color:#e6db74>&#39;[{&#34;constant&#34;:false,&#34;inputs&#34;:[{&#34;name&#34;:&#34;candidate&#34;,&#34;type&#34;:&#34;bytes32&#34;}],&#34;name&#34;:&#34;totalVotesFor&#34;,&#34;outputs&#34;:[{&#34;name&#34;:&#34;&#34;,&#34;type&#34;:&#34;uint8&#34;}],&#34;payable&#34;:false,&#34;type&#34;:&#34;function&#34;},{&#34;constant&#34;:false,&#34;inputs&#34;:[{&#34;name&#34;:&#34;candidate&#34;,&#34;type&#34;:&#34;bytes32&#34;}],&#34;name&#34;:&#34;validCandidate&#34;,&#34;outputs&#34;:[{&#34;name&#34;:&#34;&#34;,&#34;type&#34;:&#34;bool&#34;}],&#34;payable&#34;:false,&#34;type&#34;:&#34;function&#34;},{&#34;constant&#34;:true,&#34;inputs&#34;:[{&#34;name&#34;:&#34;&#34;,&#34;type&#34;:&#34;bytes32&#34;}],&#34;name&#34;:&#34;votesReceived&#34;,&#34;outputs&#34;:[{&#34;name&#34;:&#34;&#34;,&#34;type&#34;:&#34;uint8&#34;}],&#34;payable&#34;:false,&#34;type&#34;:&#34;function&#34;},{&#34;constant&#34;:true,&#34;inputs&#34;:[{&#34;name&#34;:&#34;x&#34;,&#34;type&#34;:&#34;bytes32&#34;}],&#34;name&#34;:&#34;bytes32ToString&#34;,&#34;outputs&#34;:[{&#34;name&#34;:&#34;&#34;,&#34;type&#34;:&#34;string&#34;}],&#34;payable&#34;:false,&#34;type&#34;:&#34;function&#34;},{&#34;constant&#34;:true,&#34;inputs&#34;:[{&#34;name&#34;:&#34;&#34;,&#34;type&#34;:&#34;uint256&#34;}],&#34;name&#34;:&#34;candidateList&#34;,&#34;outputs&#34;:[{&#34;name&#34;:&#34;&#34;,&#34;type&#34;:&#34;bytes32&#34;}],&#34;payable&#34;:false,&#34;type&#34;:&#34;function&#34;},{&#34;constant&#34;:false,&#34;inputs&#34;:[{&#34;name&#34;:&#34;candidate&#34;,&#34;type&#34;:&#34;bytes32&#34;}],&#34;name&#34;:&#34;voteForCandidate&#34;,&#34;outputs&#34;:[],&#34;payable&#34;:false,&#34;type&#34;:&#34;function&#34;},{&#34;constant&#34;:true,&#34;inputs&#34;:[],&#34;name&#34;:&#34;contractOwner&#34;,&#34;outputs&#34;:[{&#34;name&#34;:&#34;&#34;,&#34;type&#34;:&#34;address&#34;}],&#34;payable&#34;:false,&#34;type&#34;:&#34;function&#34;},{&#34;inputs&#34;:[{&#34;name&#34;:&#34;candidateNames&#34;,&#34;type&#34;:&#34;bytes32[]&#34;}],&#34;payable&#34;:false,&#34;type&#34;:&#34;constructor&#34;}]&#39;</span>)
+</span></span><span style=display:flex><span><span style=color:#a6e22e>VotingContract</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>web3</span>.<span style=color:#a6e22e>eth</span>.<span style=color:#a6e22e>contract</span>(<span style=color:#a6e22e>abi</span>);
+</span></span><span style=display:flex><span><span style=color:#75715e>// nodejs console中contractInstance.address获得的地址
+</span></span></span><span style=display:flex><span><span style=color:#a6e22e>contractInstance</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>VotingContract</span>.<span style=color:#a6e22e>at</span>(<span style=color:#e6db74>&#39;0xf7f433a4a2f9bf3f364bb96abe6a07778a61e095&#39;</span>);
+</span></span><span style=display:flex><span><span style=color:#a6e22e>candidates</span> <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#34;Rama&#34;</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;candidate-1&#34;</span>, <span style=color:#e6db74>&#34;Nick&#34;</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;candidate-2&#34;</span>, <span style=color:#e6db74>&#34;Jose&#34;</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;candidate-3&#34;</span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>voteForCandidate</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>candidateName</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#34;#candidate&#34;</span>).<span style=color:#a6e22e>val</span>();
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>contractInstance</span>.<span style=color:#a6e22e>voteForCandidate</span>(<span style=color:#a6e22e>candidateName</span>, {<span style=color:#a6e22e>from</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>web3</span>.<span style=color:#a6e22e>eth</span>.<span style=color:#a6e22e>accounts</span>[<span style=color:#ae81ff>0</span>]}, <span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>div_id</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>candidates</span>[<span style=color:#a6e22e>candidateName</span>];
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#34;#&#34;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>div_id</span>).<span style=color:#a6e22e>html</span>(<span style=color:#a6e22e>contractInstance</span>.<span style=color:#a6e22e>totalVotesFor</span>.<span style=color:#a6e22e>call</span>(<span style=color:#a6e22e>candidateName</span>).<span style=color:#a6e22e>toString</span>());
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>$</span>(document).<span style=color:#a6e22e>ready</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>candidateNames</span> <span style=color:#f92672>=</span> Object.<span style=color:#a6e22e>keys</span>(<span style=color:#a6e22e>candidates</span>);
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>var</span> <span style=color:#a6e22e>i</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; <span style=color:#a6e22e>i</span> <span style=color:#f92672>&lt;</span> <span style=color:#a6e22e>candidateNames</span>.<span style=color:#a6e22e>length</span>; <span style=color:#a6e22e>i</span><span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>name</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>candidateNames</span>[<span style=color:#a6e22e>i</span>];
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>val</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>contractInstance</span>.<span style=color:#a6e22e>totalVotesFor</span>.<span style=color:#a6e22e>call</span>(<span style=color:#a6e22e>name</span>).<span style=color:#a6e22e>toString</span>()
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#34;#&#34;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>candidates</span>[<span style=color:#a6e22e>name</span>]).<span style=color:#a6e22e>html</span>(<span style=color:#a6e22e>val</span>);
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div></li></ul><p>以上是不使用框架的智能合约的开发应用。</p><h1 id=voting优化>voting优化</h1><h2 id=创建truffle工程>创建truffle工程</h2><pre tabindex=0><code>mkdir voting
+cd voting
+truffle unbox webpack
+</code></pre><h2 id=创建合约植入代码>创建合约植入代码。</h2><ul><li><p>migrations/2_deploy_contracts.js</p><pre tabindex=0><code>var VotingContract = artifacts.require(&#34;./Voting.sol&#34;);
+
+module.exports = function(deployer) {
+  deployer.deploy(VotingContract,[&#39;Rama&#39;, &#39;Nick&#39;, &#39;Jose&#39;], {gas: 6700000});
+};
+</code></pre></li></ul><h2 id=dapp前端代码>DAPP前端代码</h2><ul><li><p>app/javasripts/app.js</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#75715e>// Import the page&#39;s CSS. Webpack will know what to do with it.
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#e6db74>&#34;../stylesheets/app.css&#34;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Import libraries we need.
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>import</span> { <span style=color:#66d9ef>default</span> <span style=color:#a6e22e>as</span> <span style=color:#a6e22e>Web3</span>} <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#39;web3&#39;</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>import</span> { <span style=color:#66d9ef>default</span> <span style=color:#a6e22e>as</span> <span style=color:#a6e22e>contract</span> } <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#39;truffle-contract&#39;</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>voting_artifacts</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#39;../../build/contracts/Voting.json&#39;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>Voting</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>contract</span>(<span style=color:#a6e22e>voting_artifacts</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>candidates</span> <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#34;Rama&#34;</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;candidate-1&#34;</span>, <span style=color:#e6db74>&#34;Nick&#34;</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;candidate-2&#34;</span>, <span style=color:#e6db74>&#34;Jose&#34;</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;candidate-3&#34;</span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>window.<span style=color:#a6e22e>voteForCandidate</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>candidate</span>) {
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>candidateName</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#34;#candidate&#34;</span>).<span style=color:#a6e22e>val</span>();
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>try</span> {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#34;#msg&#34;</span>).<span style=color:#a6e22e>html</span>(<span style=color:#e6db74>&#34;Vote has been submitted. The vote count will increment as soon as the vote is recorded on the blockchain. Please wait.&#34;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#34;#candidate&#34;</span>).<span style=color:#a6e22e>val</span>(<span style=color:#e6db74>&#34;&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/* Voting.deployed() returns an instance of the contract. Every call
+</span></span></span><span style=display:flex><span><span style=color:#75715e>     * in Truffle returns a promise which is why we have used then()
+</span></span></span><span style=display:flex><span><span style=color:#75715e>     * everywhere we have a transaction call
+</span></span></span><span style=display:flex><span><span style=color:#75715e>     */</span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>Voting</span>.<span style=color:#a6e22e>deployed</span>().<span style=color:#a6e22e>then</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>contractInstance</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>contractInstance</span>.<span style=color:#a6e22e>voteForCandidate</span>(<span style=color:#a6e22e>candidateName</span>, {<span style=color:#a6e22e>gas</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>140000</span>, <span style=color:#a6e22e>from</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>web3</span>.<span style=color:#a6e22e>eth</span>.<span style=color:#a6e22e>accounts</span>[<span style=color:#ae81ff>0</span>]}).<span style=color:#a6e22e>then</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>div_id</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>candidates</span>[<span style=color:#a6e22e>candidateName</span>];
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>contractInstance</span>.<span style=color:#a6e22e>totalVotesFor</span>.<span style=color:#a6e22e>call</span>(<span style=color:#a6e22e>candidateName</span>).<span style=color:#a6e22e>then</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>v</span>) {
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#34;#&#34;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>div_id</span>).<span style=color:#a6e22e>html</span>(<span style=color:#a6e22e>v</span>.<span style=color:#a6e22e>toString</span>());
+</span></span><span style=display:flex><span>          <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#34;#msg&#34;</span>).<span style=color:#a6e22e>html</span>(<span style=color:#e6db74>&#34;&#34;</span>);
+</span></span><span style=display:flex><span>        });
+</span></span><span style=display:flex><span>      });
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>  } <span style=color:#66d9ef>catch</span> (<span style=color:#a6e22e>err</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>err</span>);
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>$</span>( document ).<span style=color:#a6e22e>ready</span>(<span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>if</span> (<span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>web3</span> <span style=color:#f92672>!==</span> <span style=color:#e6db74>&#39;undefined&#39;</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>warn</span>(<span style=color:#e6db74>&#34;Using web3 detected from external source like Metamask&#34;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// Use Mist/MetaMask&#39;s provider
+</span></span></span><span style=display:flex><span>    window.<span style=color:#a6e22e>web3</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Web3</span>(<span style=color:#a6e22e>web3</span>.<span style=color:#a6e22e>currentProvider</span>);
+</span></span><span style=display:flex><span>  } <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>warn</span>(<span style=color:#e6db74>&#34;No web3 detected. Falling back to http://localhost:8545. You should remove this fallback when you deploy live, as it&#39;s inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask&#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+</span></span></span><span style=display:flex><span>    window.<span style=color:#a6e22e>web3</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Web3</span>(<span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Web3</span>.<span style=color:#a6e22e>providers</span>.<span style=color:#a6e22e>HttpProvider</span>(<span style=color:#e6db74>&#34;http://localhost:8545&#34;</span>));
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>Voting</span>.<span style=color:#a6e22e>setProvider</span>(<span style=color:#a6e22e>web3</span>.<span style=color:#a6e22e>currentProvider</span>);
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>candidateNames</span> <span style=color:#f92672>=</span> Object.<span style=color:#a6e22e>keys</span>(<span style=color:#a6e22e>candidates</span>);
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>var</span> <span style=color:#a6e22e>i</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; <span style=color:#a6e22e>i</span> <span style=color:#f92672>&lt;</span> <span style=color:#a6e22e>candidateNames</span>.<span style=color:#a6e22e>length</span>; <span style=color:#a6e22e>i</span><span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>name</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>candidateNames</span>[<span style=color:#a6e22e>i</span>];
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>Voting</span>.<span style=color:#a6e22e>deployed</span>().<span style=color:#a6e22e>then</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>contractInstance</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>contractInstance</span>.<span style=color:#a6e22e>totalVotesFor</span>.<span style=color:#a6e22e>call</span>(<span style=color:#a6e22e>name</span>).<span style=color:#a6e22e>then</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>v</span>) {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>$</span>(<span style=color:#e6db74>&#34;#&#34;</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>candidates</span>[<span style=color:#a6e22e>name</span>]).<span style=color:#a6e22e>html</span>(<span style=color:#a6e22e>v</span>.<span style=color:#a6e22e>toString</span>());
+</span></span><span style=display:flex><span>      });
+</span></span><span style=display:flex><span>    })
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div></li><li><p>app/index.html</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>title</span>&gt;Hello World DApp&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>link</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;https://fonts.googleapis.com/css?family=Open+Sans:400,700&#39;</span> <span style=color:#a6e22e>rel</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;stylesheet&#39;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;text/css&#39;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>link</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&#39;</span> <span style=color:#a6e22e>rel</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;stylesheet&#39;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;text/css&#39;</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;container&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>h1</span>&gt;A Simple Hello World Voting Application&lt;/<span style=color:#f92672>h1</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;address&#34;</span>&gt;&lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;table-responsive&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>table</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;table table-bordered&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>thead</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>th</span>&gt;Candidate&lt;/<span style=color:#f92672>th</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>th</span>&gt;Votes&lt;/<span style=color:#f92672>th</span>&gt;
+</span></span><span style=display:flex><span>        &lt;/<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>thead</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>tbody</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>td</span>&gt;Rama&lt;/<span style=color:#f92672>td</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>td</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;candidate-1&#34;</span>&gt;&lt;/<span style=color:#f92672>td</span>&gt;
+</span></span><span style=display:flex><span>        &lt;/<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>td</span>&gt;Nick&lt;/<span style=color:#f92672>td</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>td</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;candidate-2&#34;</span>&gt;&lt;/<span style=color:#f92672>td</span>&gt;
+</span></span><span style=display:flex><span>        &lt;/<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>td</span>&gt;Jose&lt;/<span style=color:#f92672>td</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>td</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;candidate-3&#34;</span>&gt;&lt;/<span style=color:#f92672>td</span>&gt;
+</span></span><span style=display:flex><span>        &lt;/<span style=color:#f92672>tr</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>tbody</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>table</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;msg&#34;</span>&gt;&lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>input</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;candidate&#34;</span> /&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;#&#34;</span> <span style=color:#a6e22e>onclick</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;voteForCandidate()&#34;</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-primary&#34;</span>&gt;Vote&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>script</span> <span style=color:#a6e22e>src</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;https://code.jquery.com/jquery-3.1.1.slim.min.js&#34;</span>&gt;&lt;/<span style=color:#f92672>script</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>script</span> <span style=color:#a6e22e>src</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;app.js&#34;</span>&gt;&lt;/<span style=color:#f92672>script</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div></li></ul><h2 id=编译部署智能合约>编译部署智能合约:</h2><pre tabindex=0><code>➜  voting git:(master) ✗ truffle compile
+➜  voting git:(master) ✗ truffle migrate
+➜  voting git:(master) ✗ truffle console
+truffle(development)&gt; Voting.deployed().then(function(contractInstance) {contractInstance.voteForCandidate(&#39;Rama&#39;).then(function(v) {console.log(v)})})
+undefined
+truffle(development)&gt; { tx: &#39;0xe2ef29e4a6d02ff1217148e3038ba3edcf815840d4400dd8895a5c2497a6e239&#39;,
+  receipt:
+   { transactionHash: &#39;0xe2ef29e4a6d02ff1217148e3038ba3edcf815840d4400dd8895a5c2497a6e239&#39;,
+     transactionIndex: 0,
+     blockHash: &#39;0x19066839d607b6a7f842c026a11fe130474dce2b62f5d0e9c9f2f2d48d286963&#39;,
+     blockNumber: 5,
+     gasUsed: 43411,
+     cumulativeGasUsed: 43411,
+     contractAddress: null,
+     logs: [],
+     status: &#39;0x01&#39;,
+     logsBloom: &#39;0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&#39; },
+  logs: [] }
+</code></pre><h2 id=运行应用>运行应用</h2><p><code>npm run dev</code></p><p>登录<code>metamask</code>进行应用访问：
+<img src=/res/img/blockchain/voting-v1.png alt></p><h2 id=代码>代码</h2><pre tabindex=0><code>git clone https://github.com/LiZoRN/BlockChain.git
+git checkout v1.0
+</code></pre><h1 id=投票v2版本>投票v2版本</h1><p>一般在选举中，每一个选民只能投出一票给候选人。但假设你是一家公司的股东，你可能需要会有这样的要求：票数按拥有的股票数来定。</p><ul><li>项目目标</li></ul><ol><li>学习使用数据类型<code>Struct</code>用来组织和存储区块链上的数据</li><li>学习票据(tokens)的概念并应用到本项目</li></ol><h2 id=功能说明>功能说明</h2><p><img src=https://cdn-images-1.medium.com/max/1200/1*3cd64RjjJiVuAFTEkw5-sA.png alt=image></p><ol><li>票据(tokens):表示可用于投票的总票数</li><li>每一个选民使用货币（<code>eth</code>）来购买票据用于投票</li><li>你可以查看投票信息：<ul><li>每个候选人拥有多少tokens</li><li>自己所投的token情况</li></ul></li><li>候选人不再指定，从整条链上获取。</li></ol><h2 id=智能合约>智能合约</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#a6e22e>pragma</span> <span style=color:#a6e22e>solidity</span> <span style=color:#f92672>^</span><span style=color:#ae81ff>0.4</span>.<span style=color:#ae81ff>18</span>; <span style=color:#75715e>//We have to specify what version of the compiler this code will use
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>contract</span> <span style=color:#a6e22e>Voting</span> {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// We use the struct datatype to store the voter information.
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>struct</span> <span style=color:#a6e22e>voter</span> {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>address</span> <span style=color:#a6e22e>voterAddress</span>; <span style=color:#75715e>// The address of the voter
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>uint</span> <span style=color:#a6e22e>tokensBought</span>;    <span style=color:#75715e>// The total no. of tokens this voter owns
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>uint</span>[] <span style=color:#a6e22e>tokensUsedPerCandidate</span>; <span style=color:#75715e>// Array to keep track of votes per candidate.
+</span></span></span><span style=display:flex><span>    <span style=color:#75715e>/* We have an array of candidates initialized below.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>     Every time this voter votes with her tokens, the value at that
+</span></span></span><span style=display:flex><span><span style=color:#75715e>     index is incremented. Example, if candidateList array declared
+</span></span></span><span style=display:flex><span><span style=color:#75715e>     below has [&#34;Rama&#34;, &#34;Nick&#34;, &#34;Jose&#34;] and this
+</span></span></span><span style=display:flex><span><span style=color:#75715e>     voter votes 10 tokens to Nick, the tokensUsedPerCandidate[1]
+</span></span></span><span style=display:flex><span><span style=color:#75715e>     will be incremented by 10.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>     */</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/* mapping is equivalent to an associate array or hash
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   The key of the mapping is candidate name stored as type bytes32 and value is
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   an unsigned integer which used to store the vote count
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   */</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>mapping</span> (<span style=color:#a6e22e>address</span> =&gt; <span style=color:#a6e22e>voter</span>) <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>voterInfo</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/* Solidity doesn&#39;t let you return an array of strings yet. We will use an array of bytes32
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   instead to store the list of candidates
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   */</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>mapping</span> (<span style=color:#a6e22e>bytes32</span> =&gt; <span style=color:#a6e22e>uint</span>) <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>votesReceived</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>bytes32</span>[] <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>candidateList</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>uint</span> <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>totalTokens</span>; <span style=color:#75715e>// Total no. of tokens available for this election
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>uint</span> <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>balanceTokens</span>; <span style=color:#75715e>// Total no. of tokens still available for purchase
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>uint</span> <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>tokenPrice</span>; <span style=color:#75715e>// Price per token
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/* When the contract is deployed on the blockchain, we will initialize
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   the total number of tokens for sale, cost per token and all the candidates
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   */</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>Voting</span>(<span style=color:#a6e22e>uint</span> <span style=color:#a6e22e>tokens</span>, <span style=color:#a6e22e>uint</span> <span style=color:#a6e22e>pricePerToken</span>, <span style=color:#a6e22e>bytes32</span>[] <span style=color:#a6e22e>candidateNames</span>) <span style=color:#66d9ef>public</span> {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>candidateList</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>candidateNames</span>;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>totalTokens</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>tokens</span>;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>balanceTokens</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>tokens</span>;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>tokenPrice</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>pricePerToken</span>;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>totalVotesFor</span>(<span style=color:#a6e22e>bytes32</span> <span style=color:#a6e22e>candidate</span>) <span style=color:#a6e22e>view</span> <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>returns</span> (<span style=color:#a6e22e>uint</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>votesReceived</span>[<span style=color:#a6e22e>candidate</span>];
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/* Instead of just taking the candidate name as an argument, we now also
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   require the no. of tokens this voter wants to vote for the candidate
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   */</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>voteForCandidate</span>(<span style=color:#a6e22e>bytes32</span> <span style=color:#a6e22e>candidate</span>, <span style=color:#a6e22e>uint</span> <span style=color:#a6e22e>votesInTokens</span>) <span style=color:#66d9ef>public</span> {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>uint</span> <span style=color:#a6e22e>index</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>indexOfCandidate</span>(<span style=color:#a6e22e>candidate</span>);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>require</span>(<span style=color:#a6e22e>index</span> <span style=color:#f92672>!=</span> <span style=color:#a6e22e>uint</span>(<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// msg.sender gives us the address of the account/voter who is trying
+</span></span></span><span style=display:flex><span>    <span style=color:#75715e>// to call this function
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>voterInfo</span>[<span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>sender</span>].<span style=color:#a6e22e>tokensUsedPerCandidate</span>.<span style=color:#a6e22e>length</span> <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>for</span>(<span style=color:#a6e22e>uint</span> <span style=color:#a6e22e>i</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; <span style=color:#a6e22e>i</span> <span style=color:#f92672>&lt;</span> <span style=color:#a6e22e>candidateList</span>.<span style=color:#a6e22e>length</span>; <span style=color:#a6e22e>i</span><span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>voterInfo</span>[<span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>sender</span>].<span style=color:#a6e22e>tokensUsedPerCandidate</span>.<span style=color:#a6e22e>push</span>(<span style=color:#ae81ff>0</span>);
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// Make sure this voter has enough tokens to cast the vote
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>uint</span> <span style=color:#a6e22e>availableTokens</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>voterInfo</span>[<span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>sender</span>].<span style=color:#a6e22e>tokensBought</span> <span style=color:#f92672>-</span> <span style=color:#a6e22e>totalTokensUsed</span>(<span style=color:#a6e22e>voterInfo</span>[<span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>sender</span>].<span style=color:#a6e22e>tokensUsedPerCandidate</span>);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>require</span>(<span style=color:#a6e22e>availableTokens</span> <span style=color:#f92672>&gt;=</span> <span style=color:#a6e22e>votesInTokens</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>votesReceived</span>[<span style=color:#a6e22e>candidate</span>] <span style=color:#f92672>+=</span> <span style=color:#a6e22e>votesInTokens</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// Store how many tokens were used for this candidate
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>voterInfo</span>[<span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>sender</span>].<span style=color:#a6e22e>tokensUsedPerCandidate</span>[<span style=color:#a6e22e>index</span>] <span style=color:#f92672>+=</span> <span style=color:#a6e22e>votesInTokens</span>;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// Return the sum of all the tokens used by this voter.
+</span></span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>totalTokensUsed</span>(<span style=color:#a6e22e>uint</span>[] <span style=color:#a6e22e>_tokensUsedPerCandidate</span>) <span style=color:#66d9ef>private</span> <span style=color:#a6e22e>pure</span> <span style=color:#a6e22e>returns</span> (<span style=color:#a6e22e>uint</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>uint</span> <span style=color:#a6e22e>totalUsedTokens</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span>(<span style=color:#a6e22e>uint</span> <span style=color:#a6e22e>i</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; <span style=color:#a6e22e>i</span> <span style=color:#f92672>&lt;</span> <span style=color:#a6e22e>_tokensUsedPerCandidate</span>.<span style=color:#a6e22e>length</span>; <span style=color:#a6e22e>i</span><span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>totalUsedTokens</span> <span style=color:#f92672>+=</span> <span style=color:#a6e22e>_tokensUsedPerCandidate</span>[<span style=color:#a6e22e>i</span>];
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>totalUsedTokens</span>;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>indexOfCandidate</span>(<span style=color:#a6e22e>bytes32</span> <span style=color:#a6e22e>candidate</span>) <span style=color:#a6e22e>view</span> <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>returns</span> (<span style=color:#a6e22e>uint</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span>(<span style=color:#a6e22e>uint</span> <span style=color:#a6e22e>i</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; <span style=color:#a6e22e>i</span> <span style=color:#f92672>&lt;</span> <span style=color:#a6e22e>candidateList</span>.<span style=color:#a6e22e>length</span>; <span style=color:#a6e22e>i</span><span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>candidateList</span>[<span style=color:#a6e22e>i</span>] <span style=color:#f92672>==</span> <span style=color:#a6e22e>candidate</span>) {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>i</span>;
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>uint</span>(<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>);
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/* This function is used to purchase the tokens. Note the keyword &#39;payable&#39;
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   below. By just adding that one keyword to a function, your contract can
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   now accept Ether from anyone who calls this function. Accepting money can
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   not get any easier than this!
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   */</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>buy</span>() <span style=color:#a6e22e>payable</span> <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>returns</span> (<span style=color:#a6e22e>uint</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>uint</span> <span style=color:#a6e22e>tokensToBuy</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>value</span> <span style=color:#f92672>/</span> <span style=color:#a6e22e>tokenPrice</span>;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>require</span>(<span style=color:#a6e22e>tokensToBuy</span> <span style=color:#f92672>&lt;=</span> <span style=color:#a6e22e>balanceTokens</span>);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>voterInfo</span>[<span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>sender</span>].<span style=color:#a6e22e>voterAddress</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>sender</span>;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>voterInfo</span>[<span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>sender</span>].<span style=color:#a6e22e>tokensBought</span> <span style=color:#f92672>+=</span> <span style=color:#a6e22e>tokensToBuy</span>;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>balanceTokens</span> <span style=color:#f92672>-=</span> <span style=color:#a6e22e>tokensToBuy</span>;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>tokensToBuy</span>;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>tokensSold</span>() <span style=color:#a6e22e>view</span> <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>returns</span> (<span style=color:#a6e22e>uint</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>totalTokens</span> <span style=color:#f92672>-</span> <span style=color:#a6e22e>balanceTokens</span>;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>voterDetails</span>(<span style=color:#a6e22e>address</span> <span style=color:#a6e22e>user</span>) <span style=color:#a6e22e>view</span> <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>returns</span> (<span style=color:#a6e22e>uint</span>, <span style=color:#a6e22e>uint</span>[]) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> (<span style=color:#a6e22e>voterInfo</span>[<span style=color:#a6e22e>user</span>].<span style=color:#a6e22e>tokensBought</span>, <span style=color:#a6e22e>voterInfo</span>[<span style=color:#a6e22e>user</span>].<span style=color:#a6e22e>tokensUsedPerCandidate</span>);
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/* All the ether sent by voters who purchased the tokens is in this
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   contract&#39;s account. This method will be used to transfer out all those ethers
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   in to another account. *** The way this function is written currently, anyone can call
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   this method and transfer the balance in to their account. In reality, you should add
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   check to make sure only the owner of this contract can cash out.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>   */</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>transferTo</span>(<span style=color:#a6e22e>address</span> <span style=color:#a6e22e>account</span>) <span style=color:#66d9ef>public</span> {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>account</span>.<span style=color:#a6e22e>transfer</span>(<span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>balance</span>);
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>allCandidates</span>() <span style=color:#a6e22e>view</span> <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>returns</span> (<span style=color:#a6e22e>bytes32</span>[]) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>candidateList</span>;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><ul><li><p>migrations/2_deploy_contracts.js</p><pre tabindex=0><code>deployer.deploy(Voting, 1000, web3.toWei(&#39;0.1&#39;, &#39;ether&#39;), [&#39;Rama&#39;, &#39;Nick&#39;, &#39;Jose&#39;]);
+</code></pre></li></ul><p>重新部署智能合约</p><pre tabindex=0><code>truffle compile
+truffle migrate --reset
+</code></pre><p>启动工程:<code>npm run dev</code></p><h2 id=完成代码>完成代码</h2><pre tabindex=0><code>git clone https://github.com/LiZoRN/BlockChain.git
+git checkout v2.0
+</code></pre></div></article></main><footer class=footer><p>© 2026 Lizorn</p></footer></div></body></html>

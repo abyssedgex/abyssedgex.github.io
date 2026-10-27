@@ -1,0 +1,82 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Docker环境 — 山海炼物</title><meta name=description content="山海炼物 — 炼物成器，格物致知"><link rel=stylesheet href=/css/style.css><link rel=icon href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚒️</text></svg>"><link rel=preconnect href=https://fonts.googleapis.com><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel=stylesheet></head><body><div class=container><header class=header><nav class=nav><span class=nav-prompt>❯</span>
+<span class=nav-sep>~</span>
+<a class=site-title href=https://lizorn.com/>山海炼物</a>
+<span class=nav-links><a href=/about/>关于</a>
+<a href=/posts/>文章</a>
+<a href=/talks/>Talks</a>
+<a href=/projects/>项目</a></span></nav></header><main class=main><article class=post><h1 class=post-title>Docker环境</h1><time class=post-date>2016-10-27</time><div class=post-content><p>如今技术革新非常快,搭建环境也日趋繁杂.我是个爱好折腾之人,时不时的总想把玩下新的技术,每天在win10,ubuntu,mac系统间来回切换,感谢Docker,救我于水火.</p><h1 id=基础镜像>基础镜像</h1><p>自己裁剪一个baseImage,带emacs编辑器.编写Dockerfile,并编译</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>git clone https://github.com/LiZoRN/DockerBaseImage.git
+</span></span><span style=display:flex><span>cd DockerBseImage
+</span></span><span style=display:flex><span>docker build -t invain/ubuntu .
+</span></span></code></pre></div><p>将镜像文件push到<code>Docker hub</code></p><p><code>docker push invain/ubuntu</code></p><p>其他环境下就可以直接使用</p><p><code>docker pull invain/ubuntu</code></p><p><em>注意</em>: Docker镜像共享，不建议直接拿Dockerfile build生产, 而应从Docker镜像库里拉,避免镜像Build的过程中引入编译环境差异.</p><h1 id=hadoop环境搭建单站>Hadoop环境搭建(单站)</h1><h2 id=创建hadoop用户>创建hadoop用户</h2><p>增加hadoop用户，授予管理员权限，并登录</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>$ sudo useradd -m hadoop
+</span></span><span style=display:flex><span>$ sudo passwd hadoop
+</span></span><span style=display:flex><span>$ sudo adduser hadoop sudo
+</span></span><span style=display:flex><span>$ sudo su hadoop
+</span></span></code></pre></div><h2 id=安装并配置ssh>安装并配置SSH</h2><p>安装openssh</p><p><code>$ sudo apt-get install openssh-server</code></p><p>启动</p><p><code>$ sudo /etc/init.d/ssh start</code></p><p>设置免密码登录，生成私钥和公钥,并将公钥追加到 authorized_keys中，它为用户保存所有允许登录到ssh客户端用户的公钥内容。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>$ ssh-keygen -t rsa -P <span style=color:#e6db74>&#34;&#34;</span>
+</span></span><span style=display:flex><span>$  cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+</span></span></code></pre></div><h2 id=安装java环境>安装Java环境</h2><p><code>sudo apt-get install openjdk-7-jdk</code></p><p>获取java安装目录.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>$ update-alternatives --config java
+</span></span><span style=display:flex><span>There is only one alternative in link group java <span style=color:#f92672>(</span>providing /usr/bin/java<span style=color:#f92672>)</span>: /usr
+</span></span><span style=display:flex><span>/lib/jvm/java-7-openjdk-amd64/jre/bin/java
+</span></span><span style=display:flex><span>Nothing to configure.
+</span></span></code></pre></div><p><code>~/.bashrc</code>中写入JAVA_HOME路径,</p><pre tabindex=0><code>export JAVA_HOME=JDK安装路径
+</code></pre><h2 id=安装hadoop>安装Hadoop</h2><p>安装hadoop,如2.7.3版本</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>wget http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz
+</span></span><span style=display:flex><span>sudo tar xzf hadoop-2.7.3.tar.gz
+</span></span><span style=display:flex><span>sudo mv hadoop-2.7.3 /usr/local/hadoop
+</span></span></code></pre></div><p>配置Hadoop的环境变量</p><p>给你的<code>~/bashrc</code>添加如下内容.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e>#HADOOP VARIABLES START</span>
+</span></span><span style=display:flex><span>export JAVA_HOME<span style=color:#f92672>=</span>/usr/lib/jvm/java-7-openjdk-amd64
+</span></span><span style=display:flex><span>export HADOOP_HOME<span style=color:#f92672>=</span>/usr/local/hadoop
+</span></span><span style=display:flex><span>export PATH<span style=color:#f92672>=</span>$PATH:$HADOOP_HOME/bin
+</span></span><span style=display:flex><span>export PATH<span style=color:#f92672>=</span>$PATH:$HADOOP_HOME/sbin
+</span></span><span style=display:flex><span>export HADOOP_MAPRED_HOME<span style=color:#f92672>=</span>$HADOOP_HOME
+</span></span><span style=display:flex><span>export HADOOP_COMMON_HOME<span style=color:#f92672>=</span>$HADOOP_HOME
+</span></span><span style=display:flex><span>export HADOOP_HDFS_HOME<span style=color:#f92672>=</span>$HADOOP_HOME
+</span></span><span style=display:flex><span>export YARN_HOME<span style=color:#f92672>=</span>$HADOOP_HOME
+</span></span><span style=display:flex><span>export HADOOP_COMMON_LIB_NATIVE_DIR<span style=color:#f92672>=</span>$HADOOP_HOME/lib/native
+</span></span><span style=display:flex><span>export HADOOP_OPTS<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;-Djava.library.path=</span>$HADOOP_HOME<span style=color:#e6db74>/lib&#34;</span>
+</span></span><span style=display:flex><span>export STREAM<span style=color:#f92672>=</span>$HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-*.jar
+</span></span><span style=display:flex><span>export HADOOP_CLASSPATH<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>JAVA_HOME<span style=color:#e6db74>}</span>/lib/tools.jar
+</span></span><span style=display:flex><span><span style=color:#75715e>#HADOOP VARIABLES END</span>
+</span></span></code></pre></div><p>验证hadoop是否安装成功</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>hadoop@8bbae082ad69:~$ hadoop version
+</span></span><span style=display:flex><span>Hadoop 2.7.3
+</span></span><span style=display:flex><span>Subversion https://git-wip-us.apache.org/repos/asf/hadoop.git -r baa91f7c6bc9cb92be5982de4719c1c8af91ccff
+</span></span><span style=display:flex><span>Compiled by root on 2016-08-18T01:41Z
+</span></span><span style=display:flex><span>Compiled with protoc 2.5.0
+</span></span><span style=display:flex><span>From source with checksum 2e4ce5f957ea4db193bce3734ff29ff4
+</span></span><span style=display:flex><span>This command was run using /usr/local/hadoop/share/hadoop/common/hadoop-common-2.7.3.jar
+</span></span></code></pre></div><p>将镜像push到Docker hub</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>docker commit 8bbae082ad69 invain/hadoop
+</span></span><span style=display:flex><span>docker push invain/hadoop
+</span></span></code></pre></div><h1 id=spark>spark</h1><p>运行一个java docker容器.</p><p><code>docker run -it invain/java</code></p><p>下载spark包.</p><pre tabindex=0><code>wget http://mirrors.hust.edu.cn/apache/spark/spark-2.0.1/spark-2.0.1-bin-hadoop2.7.tgz
+sudo tar xzf spark-2.0.1-bin-hadoop2.7.tgz
+sudo mv spark-2.0.1-bin-hadoop2.7 /usr/local/spark
+</code></pre><p>配置好环境变量.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>export SPARK_HOME<span style=color:#f92672>=</span>/usr/local/spark
+</span></span><span style=display:flex><span>export PATH<span style=color:#f92672>=</span>$SPARK_HOME/bin:$PATH
+</span></span></code></pre></div><p>跑个小小示例.
+创建个文本文件,如<code>hellospark.txt</code>:</p><pre tabindex=0><code>hello world!
+hello spark!
+</code></pre><p>运行spark的python交互式控制台,<code>pyspark</code>.</p><pre tabindex=0><code>hadoop@4532e4bdaa51:~$ pyspark
+Python 2.7.6 (default, Jun 22 2015, 17:58:13)
+[GCC 4.8.2] on linux2
+Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
+Using Spark&#39;s default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to &#34;WARN&#34;.
+To adjust logging level use sc.setLogLevel(newLevel).
+16/10/28 02:10:51 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  &#39;_/
+   /__ / .__/\_,_/_/ /_/\_\   version 2.0.1
+      /_/
+
+Using Python version 2.7.6 (default, Jun 22 2015 17:58:13)
+SparkSession available as &#39;spark&#39;.
+&gt;&gt;&gt;
+</code></pre><p>使用textFile加载文本到RDD,进行’wordcount’.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>&gt;&gt;&gt; text <span style=color:#f92672>=</span> sc.textFile<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;hellospark.txt&#34;</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>&gt;&gt;&gt; counts <span style=color:#f92672>=</span> text.flatMap<span style=color:#f92672>(</span>lambda line: line.split<span style=color:#f92672>(</span><span style=color:#e6db74>&#34; &#34;</span><span style=color:#f92672>))</span>.map<span style=color:#f92672>(</span>lambda word: <span style=color:#f92672>(</span>word,1<span style=color:#f92672>))</span>.reduceByKey<span style=color:#f92672>(</span>lambda x,y: x + y<span style=color:#f92672>)</span>
+</span></span></code></pre></div><p>调用saveAsTextFile,分布式作业开始了…</p><pre tabindex=0><code>counts.saveAsTextFile(&#34;hellospark_out&#34;)
+</code></pre><p>可以在工作台输出目录里查看</p><pre tabindex=0><code>hadoop@4532e4bdaa51:~$ cat hellospark_out/part-00000
+(u&#39;&#39;, 1)
+(u&#39;spark!&#39;, 1)
+(u&#39;world!&#39;, 1)
+(u&#39;hello&#39;, 2)
+</code></pre><h1 id=tensorflow>tensorflow</h1><p><code>docker run -it b.gcr.io/tensorflow/tensorflow</code></p><h1 id=docker-hub>Docker hub</h1><p>需要什么库可以从<a href=https://hub.docker.com/explore/>docker hub</a>找.</p><p>Docker hub是一个类似Github一样的地方,只不过前者是一个镜像仓库.</p><p>docker可以让你的环境配置异常简单，通常你只需要执行一个命令.</p><p><em>Mysql</em></p><pre tabindex=0><code>$ docker run -p 3306:3306 --name username -e MYSQL_ROOT_PASSWORD=password -d mysql:tag
+</code></pre><p><em>mongo</em></p><p><code>docker run --name some-mongo -d mongo</code></p><p><em><a href=https://hub.docker.com/_/oraclelinux/>Oracle</a></em></p></div></article></main><footer class=footer><p>© 2026 Lizorn</p></footer></div></body></html>

@@ -1,0 +1,286 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Python&数据库 — 山海炼物</title><meta name=description content="山海炼物 — 炼物成器，格物致知"><link rel=stylesheet href=/css/style.css><link rel=icon href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚒️</text></svg>"><link rel=preconnect href=https://fonts.googleapis.com><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel=stylesheet></head><body><div class=container><header class=header><nav class=nav><span class=nav-prompt>❯</span>
+<span class=nav-sep>~</span>
+<a class=site-title href=https://lizorn.com/>山海炼物</a>
+<span class=nav-links><a href=/about/>关于</a>
+<a href=/posts/>文章</a>
+<a href=/talks/>Talks</a>
+<a href=/projects/>项目</a></span></nav></header><main class=main><article class=post><h1 class=post-title>Python&数据库</h1><time class=post-date>2018-05-11</time><div class=post-content><h1 id=sql>Sql</h1><h2 id=定义>定义</h2><p>SQL是一种数据库查询和程序设计语言，用于存取数据以及查询、更新和管理关系数据库系统。</p><h2 id=特点>特点：</h2><ol><li>是一种高级的非过程化编程语言，允许用户在高层数据结构上工作。</li><li>它不要求用户指定对数据的存放方法，也不需要用户了解具体的数据存放方式。</li><li>结构化查询语言语句可以嵌套，这使它具有极大的灵活性和强大的功能。</li></ol><h2 id=组成>组成</h2><p>SQL由六个部分组成：</p><ul><li>数据查询语言（DQL）</li><li>数据操作语言（DML）</li><li>事务处理语言（TPL）</li><li>数据控制语言（DCL）</li><li>数据定义语言（DDL）</li><li>针控制语言（CCL）</li></ul><h1 id=rmdb>RMDB</h1><h2 id=定义-1>定义</h2><p>RDBMS（关系型数据库): R, 即 “Relational” (有关系，关联的),是其中内容最丰富的部分. 数据通过 表 (table) 进行组织,每张表都是一些由 类型 (type) 相关联的 列 (column) 构成. 所有表,列及其类的类型被称为数据库的 schema (架构或模式).</p><p><code>schema</code> 通过每张表的描述信息完整刻画了数据库的结构.</p><p>比如, 一张叫做 Car 的表可能有以下一些列:</p><pre tabindex=0><code>Make: a string
+Model: a string
+Year: a four-digit number; alternatively, a date
+Color: a string
+VIN(Vehicle Identification Number): a string
+</code></pre><p>在一张表中,每个单一的条目叫做一<code>行(row)</code>或者一条<code>记录(record)</code>.</p><p>为了区分每条记录, 通常会定义一个 主键 (primary key).
+表中的主键是其中一列, 它能够唯一标识每一行.</p><blockquote><p>在表 Car 中, VIN 是一个天然的主键选择, 因为它能够保证每辆车具有唯一的标识.</p></blockquote><h2 id=schemas>Schemas</h2><p>schema , 描述了列的名字及其所包含数据的类型。它还包括了其他一些信息， 比如哪些列可以为空， 哪些列不允许有重复值， 以及其他对表中列的所有限制信息。 在任意时刻一张表只能有一个 schema, 并且 表中的所有行必须遵守 schema 的规定 。</p><p>如果在传统的关系型数据库中，因为业务的需求需要新增一些字段，就需要变更表-添加新的列，对一个大型数据库做一些改变通常并不是一件小事。DBA需要做大量的schema维护工作。</p><h2 id=querying>Querying</h2><p>SQL 能够让我们通过对数据库进行<code>query (查询)</code>来获取有用的信息.
+查询简单来说, 查询就是用一个结构化语言向 RDBMS 提问,返回的行就是问题的答案.</p><p>我们可以通过在数据库上进行如下的 SQL 查询 :</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span>SELECT Make, Model FROM Car;
+</span></span></code></pre></div><p>将SQL大致翻译成中文:</p><blockquote><p>向我展示(SELECT)表 Car(FROM) 每一行中 Make 和 Model 的值.</p></blockquote><p>查询特定的表，使用表的主键<code>VIN</code>来标示唯一的一辆车:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span>SELECT <span style=color:#f92672>*</span> FROM Car WHERE VIN <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;2134AFGER245267&#39;</span>
+</span></span></code></pre></div><h2 id=relations>Relations</h2><p>数据库设计三大范式：</p><ol><li>第一范式:确保每列的原子性.</li><li>第二范式:确保表中的每列都和主键相关.</li><li>确保每列都和主键列直接相关,而不是间接相关.</li></ol><p>ServiceHistory 表:</p><pre tabindex=0><code>VIN | Make | Model | Year | Color | Service Performed | Mechanic | Price | Date
+</code></pre><p>->Vehicle+ServiceHistory表</p><pre tabindex=0><code>VIN | Make | Model | Year | Color
+</code></pre><pre tabindex=0><code>VIN | Service Performed | Mechanic | Price | Date
+</code></pre><p>对两表做关联查询，如果数据库没有建立索引(indices),上面的查询就需要进行表扫描(table scan).</p><h1 id=nosql>NOSQL</h1><h2 id=nosql数据库分类>NOSQL数据库分类</h2><p>分类 Examples举例 典型应用场景 数据模型 优点 缺点</p><table><thead><tr><th>分类</th><th>Examples举例</th><th>典型应用场景</th><th>数据模型</th><th>优点</th><th>缺点</th></tr></thead><tbody><tr><td>键值</td><td>Tokyo Cabinet/Tyrant, Redis, Voldemort, Oracle BDB</td><td>内容缓存，主要用于处理大量数据的高访问负载，也用于一些日志系统等等。</td><td>Key 指向 Value 的键值对，通常用hash table来实现</td><td>查找速度快</td><td>数据无结构化，通常只被当作字符串或者二进制数据</td></tr><tr><td>列存储数据库</td><td>Cassandra, HBase, Riak</td><td>分布式的文件系统</td><td>以列簇式存储，将同一列数据存在一起</td><td>centered</td><td>$12</td></tr><tr><td>文档型数据库</td><td>CouchDB, MongoDb，SequoiaDB</td><td>Web应用（与Key-Value类似，Value是结构化的，不同的是数据库能够了解Value的内容）</td><td>Key-Value对应的键值对，Value为结构化数据</td><td>数据结构要求不严格，表结构可变，不需要像关系型数据库一样需要预先定义表结构</td><td>查询性能不高，而且缺乏统一的查询语法。</td></tr><tr><td>图形(Graph)数据库</td><td>Neo4J, InfoGrid, Infinite Graph</td><td>社交网络，推荐系统等。专注于构建关系图谱</td><td>图结构</td><td>利用图结构相关算法。比如最短路径寻址，N度关系查找等</td><td>很多时候需要对整个图做计算才能得出需要的信息，而且这种结构不太好做分布式的集群方案。</td></tr></tbody></table><h1 id=rmdb-vs-nosql-db>RMDB vs NOSQL-DB</h1><h2 id=关系型数据库>关系型数据库</h2><h3 id=优点>优点</h3><ol><li><p>事务处理—保持数据的一致性；</p></li><li><p>由于以标准化为前提，数据更新的开销很小（相同的字段基本上只有一处）；</p></li><li><p>可以进行Join等复杂查询</p><h3 id=缺点>缺点：</h3></li><li><p>扩展困难：由于存在类似Join这样多表查询机制，使得数据库在扩展方面很艰难;</p></li><li><p>读写慢：这种情况主要发生在数据量达到一定规模时由于关系型数据库的系统逻辑非常复杂，使得 其 非常容易发生死锁等的并发问题，所以导致其读写速度下滑非常严重;</p></li><li><p>成本高：企业级数据库的License价格很惊人，并且随着系统的规模，而不断上升;</p></li><li><p>有限的支撑容量：现有关系型解决方案还无法支撑Google这样海量的数据存储;</p></li></ol><h2 id=非关系型数据库>非关系型数据库</h2><h3 id=优点-1>优点：</h3><ol><li>简单的扩展：比如Cassandra的架构类似于P2P，所以能通过轻松地添加新的节点来扩展这个集群;</li><li>快速的读写：比如Redis，由于其逻辑简单，且支持内存，使得其性能非常出色，单节点每秒可以处理超过10万次读写操作;</li><li>低廉的成本：这是大多数分布式数据库共有的特点，因为主要都是开源软件，没有昂贵的License成本;</li></ol><h3 id=缺点-1>缺点：</h3><ol><li>不提供对SQL的支持：如果不支持SQL这样的工业标准，将会对用户产生一定的学习和应用迁移成本;</li><li>支持的特性不够丰富：现有产品所提供的功能都比较有限，大多数NoSQL数据库都不支持事务，也不像MS SQL和Oracle那样能提供各种附加功能，比如BI和报表等;</li><li>现有产品的不够成熟：大多数产品都还处于初创期，和关系型数据库几十年的完善不可同日而语;</li></ol><h1 id=主流数据库>主流数据库</h1><p><img src=/res/img/pythondb/sql_rank.png alt=https://db-engines.com/en/ranking></p><h1 id=orm>ORM</h1><h2 id=定义-2>定义</h2><p>orm英文全称object relational mapping,就是对象映射关系程序，简单来说我们类似python这种面向对象的程序来说一切皆对象，但是我们使用的数据库却都是关系型的，为了保证一致的使用习惯，通过orm将编程语言的对象模型和数据库的关系模型建立映射关系，这样我们在使用编程语言对数据库进行操作的时候可以直接使用编程语言的对象模型进行操作就可以了，而不用直接使用sql语言。</p><h2 id=优点-2>优点：</h2><p>ORM的核心：隐藏了数据访问细节。它使得我们的通用数据库交互变得简单易行，不用熟悉SQL语句以及数据库的异构性。ORM使我们构造固化数据结构变得简单易行。</p><h2 id=缺点-2>缺点：</h2><p>无可避免的，自动化意味着映射和关联管理，代价是牺牲性能。现在的各种ORM框架都在尝试使用各种方法来减轻这块（LazyLoad，Cache），效果还是很显著的。</p><h1 id=python-orm库>Python ORM库</h1><h2 id=sqalchemy>SQAlchemy</h2><h3 id=安装>安装</h3><pre tabindex=0><code>pip install SQAlchemy
+pip install pymysql
+</code></pre><h3 id=架构>架构</h3><p><img src=/res/img/pythondb/SQAlchemy.png alt></p><h3 id=示例代码>示例代码</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> sqlalchemy <span style=color:#f92672>import</span> Column, DateTime, String, Integer, ForeignKey, func
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> sqlalchemy.orm <span style=color:#f92672>import</span> relationship, backref
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> sqlalchemy.ext.declarative <span style=color:#f92672>import</span> declarative_base
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Base <span style=color:#f92672>=</span> declarative_base()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Department</span>(Base):
+</span></span><span style=display:flex><span>    __tablename__ <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;department&#39;</span>
+</span></span><span style=display:flex><span>    id <span style=color:#f92672>=</span> Column(Integer, primary_key<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+</span></span><span style=display:flex><span>    name <span style=color:#f92672>=</span> Column(String(<span style=color:#ae81ff>50</span>) )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Employee</span>(Base):
+</span></span><span style=display:flex><span>    __tablename__ <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;employee&#39;</span>
+</span></span><span style=display:flex><span>    id <span style=color:#f92672>=</span> Column(Integer, primary_key<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+</span></span><span style=display:flex><span>    name <span style=color:#f92672>=</span> Column(String(<span style=color:#ae81ff>50</span>))
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Use default=func.now() to set the default hiring time</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># of an Employee to be the current time when an</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Employee record was created</span>
+</span></span><span style=display:flex><span>    hired_on <span style=color:#f92672>=</span> Column(DateTime, default<span style=color:#f92672>=</span>func<span style=color:#f92672>.</span>now())
+</span></span><span style=display:flex><span>    department_id <span style=color:#f92672>=</span> Column(Integer, ForeignKey(<span style=color:#e6db74>&#39;department.id&#39;</span>))
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Use cascade=&#39;delete,all&#39; to propagate the deletion of a Department onto its Employees</span>
+</span></span><span style=display:flex><span>    department <span style=color:#f92672>=</span> relationship(
+</span></span><span style=display:flex><span>        Department,
+</span></span><span style=display:flex><span>        backref<span style=color:#f92672>=</span>backref(<span style=color:#e6db74>&#39;employees&#39;</span>,
+</span></span><span style=display:flex><span>                        uselist<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>,
+</span></span><span style=display:flex><span>                        cascade<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;delete,all&#39;</span>))
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> sqlalchemy <span style=color:#f92672>import</span> create_engine
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>engine <span style=color:#f92672>=</span> create_engine(<span style=color:#e6db74>&#39;mysql+pymysql://root:root@localhost:3306/test&#39;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> sqlalchemy.orm <span style=color:#f92672>import</span> sessionmaker
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>session <span style=color:#f92672>=</span> sessionmaker()
+</span></span><span style=display:flex><span>session<span style=color:#f92672>.</span>configure(bind<span style=color:#f92672>=</span>engine)
+</span></span><span style=display:flex><span>Base<span style=color:#f92672>.</span>metadata<span style=color:#f92672>.</span>create_all(engine)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;__main__&#39;</span>:
+</span></span><span style=display:flex><span>    <span style=color:#75715e># # 创建session对象:</span>
+</span></span><span style=display:flex><span>    session <span style=color:#f92672>=</span> session()
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 创建新User对象:</span>
+</span></span><span style=display:flex><span>    new_user <span style=color:#f92672>=</span> Employee(id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;5&#39;</span>, name<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;Bob&#39;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 添加到session:</span>
+</span></span><span style=display:flex><span>    session<span style=color:#f92672>.</span>add(new_user)
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 提交即保存到数据库:</span>
+</span></span><span style=display:flex><span>    session<span style=color:#f92672>.</span>commit()
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 关闭session:</span>
+</span></span><span style=display:flex><span>    session<span style=color:#f92672>.</span>close()
+</span></span></code></pre></div><h1 id=练习写一个轻量级的数据库>练习：写一个轻量级的数据库</h1><h2 id=设计思路>设计思路：</h2><ol><li>一个 Python 的 dict 作为主要的数据存储</li><li>仅支持 string 类型作为键 (key)</li><li>支持存储 integer, string 和 list</li><li>简单 TCP/IP 服务器用来传递消息</li><li>一些像 INCREMENT, DELETE , APPEND 和 STATS 这样的高级命令</li></ol><h3 id=所需支持的命令行>所需支持的命令行</h3><pre tabindex=0><code>PUT
+参数： Key, Value
+目的： 向数据库中插入一条新的条目
+GET
+参数： Key
+目的： 从数据库中检索一个已存储的值
+PUTLIST
+参数： Key, Value
+目的： 向数据库中插入一个新的列表条目
+APPEND
+参数： Key, Value
+目的： 向数据库中一个已有的列表添加一个新的元素
+INCREMENT
+参数： key
+目的： 增长数据库的中一个整型值
+DELETE
+参数： Key
+目的： 从数据库中删除一个条目
+STATS
+参数： 无 (N/A)
+目的： 请求每个执行命令的 成功/失败 的统计信息
+</code></pre><h3 id=消息结构>消息结构</h3><h4 id=请求消息>请求消息</h4><p>一条 请求消息 (Request Message) 包含了一个命令（command），一个键 (key), 一个值 (value), 一个值的类型（type）. 后三个取决于消息类型，是可选项, 非必须。; 被用作是分隔符。即使并没有包含上述可选项， 但是在消息中仍然必须有三个 ; 字符。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span>
+</span></span><span style=display:flex><span>COMMAND; [KEY]; [VALUE]; [VALUE TYPE]
+</span></span></code></pre></div><ul><li><code>COMMAND</code> 是上面列表中的命令之一</li><li><code>KEY</code> 是一个可以用作数据库 key 的 string （可选）</li><li><code>VALUE</code> 是数据库中的一个 integer, list 或 string (可选)</li><li><code>list</code> 可以被表示为一个用逗号分隔的一串 string, 比如说, “red, green, blue”</li><li><code>VALUE TYPE</code> 描述了 VALUE 应该被解释为什么类型<ul><li>可能的类型值有：INT, STRING, LIST</li></ul></li></ul><h6 id=示例>示例</h6><pre tabindex=0><code>&#34;PUT; foo; 1; INT&#34;
+&#34;GET; foo;;&#34;
+&#34;PUTLIST; bar; a,b,c ; LIST&#34;
+&#34;APPEND; bar; d; STRING&#34;
+&#34;GETLIST; bar; ;&#34;
+STATS; ;;
+INCREMENT; foo;;
+DELETE; foo;;
+</code></pre><h4 id=响应消息>响应消息</h4><p>一个 响应消息 (Reponse Message) 包含了两个部分， 通过 ; 进行分隔。第一个部分总是 True|False , 它取决于所执行的命令是否成功。 第二个部分是命令消息 (command message),当出现错误时，便会显示错误信息。对于那些执行成功的命令，如果我们不想要默认的返回值（比如 PUT）, 就会出现成功的信息。 如果我们返回成功命令的值 (比如 GET), 那么第二个部分就会是自身值。</p><h5 id=examples>Examples</h5><pre tabindex=0><code>True; Key [foo] set to [1]
+True; 1
+True; Key [bar] set to [[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]]
+True; Key [bar] had value [d] appended
+True; [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;]
+True; {&#39;PUTLIST&#39;: {&#39;success&#39;: 1, &#39;error&#39;: 0}, &#39;STATS&#39;: {&#39;success&#39;: 0, &#39;error&#39;: 0}, &#39;INCREMENT&#39;: {&#39;success&#39;: 0, &#39;error&#39;: 0}, &#39;GET&#39;: {&#39;success&#39;: 0, &#39;error&#39;: 0}, &#39;PUT&#39;: {&#39;success&#39;: 0, &#39;error&#39;: 0}, &#39;GETLIST&#39;: {&#39;success&#39;: 1, &#39;error&#39;: 0}, &#39;APPEND&#39;: {&#39;success&#39;: 1, &#39;error&#39;: 0}, &#39;DELETE&#39;: {&#39;success&#39;: 0, &#39;error&#39;: 0}}
+</code></pre><h3 id=示例代码-1>示例代码</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># coding : utf-8</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> socket
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> time
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>HOST <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;localhost&#39;</span>
+</span></span><span style=display:flex><span>PORT <span style=color:#f92672>=</span> <span style=color:#ae81ff>6666</span>
+</span></span><span style=display:flex><span>SOCKET <span style=color:#f92672>=</span> socket<span style=color:#f92672>.</span>socket(socket<span style=color:#f92672>.</span>AF_INET, socket<span style=color:#f92672>.</span>SOCK_STREAM)
+</span></span><span style=display:flex><span><span style=color:#75715e># 状态字典</span>
+</span></span><span style=display:flex><span>STATS <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;PUT&#39;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;success&#39;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;error&#39;</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;GET&#39;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;success&#39;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;error&#39;</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;GETLIST&#39;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;success&#39;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;error&#39;</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;PUTLIST&#39;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;success&#39;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;error&#39;</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;INCREMENT&#39;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;success&#39;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;error&#39;</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;APPEND&#39;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;success&#39;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;error&#39;</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;DELETE&#39;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;success&#39;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;error&#39;</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;STATS&#39;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;success&#39;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;error&#39;</span>: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>DATA <span style=color:#f92672>=</span> {}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>parse_message</span>(data):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;解析命令行，输出元组(command, key, value).&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>        command, key, value, value_type <span style=color:#f92672>=</span> map(str<span style=color:#f92672>.</span>strip, data<span style=color:#f92672>.</span>strip()<span style=color:#f92672>.</span>split(<span style=color:#e6db74>&#39;;&#39;</span>))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>except</span>:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;Invalid input! Expected: COMMAND; [KEY]; [VALUE]; [VALUE TYPE]&#39;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> value_type:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> value_type <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;LIST&#39;</span>:
+</span></span><span style=display:flex><span>            value <span style=color:#f92672>=</span> value<span style=color:#f92672>.</span>split(<span style=color:#e6db74>&#39;,&#39;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>elif</span> value_type <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;INT&#39;</span>:
+</span></span><span style=display:flex><span>            value <span style=color:#f92672>=</span> int(value)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>        value <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> command, key, value
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>update_stats</span>(command, success):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;更新命令状态码&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># todo</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> success:
+</span></span><span style=display:flex><span>        STATS[command][<span style=color:#e6db74>&#39;success&#39;</span>] <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>        STATS[command][<span style=color:#e6db74>&#39;error&#39;</span>] <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_put</span>(key, value):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;修改key，value&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    DATA[key] <span style=color:#f92672>=</span> value
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> (<span style=color:#66d9ef>True</span>, <span style=color:#e6db74>&#39;key [</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>] set to [</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>]&#39;</span><span style=color:#f92672>.</span>format(key, value))
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_get</span>(key):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;根据key获取value&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> key <span style=color:#f92672>not</span> <span style=color:#f92672>in</span> DATA:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> (<span style=color:#66d9ef>False</span>, <span style=color:#e6db74>&#39;Error: Key [</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>] not found&#39;</span><span style=color:#f92672>.</span>format(key))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> (<span style=color:#66d9ef>True</span>, DATA[key])
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_putlist</span>(key, value):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Return a tuple containing True if the command succeeded and the message
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    to send back to the client&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> handle_put(key, value)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_getlist</span>(key):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Return a tuple containing True if the key contained a list and the
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    message to send back to the client.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    return_value <span style=color:#f92672>=</span> exists, value <span style=color:#f92672>=</span> handle_get(key)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> exists:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> return_value
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>elif</span> <span style=color:#f92672>not</span> isinstance(value, list):
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> (<span style=color:#66d9ef>False</span>, <span style=color:#e6db74>&#39;ERROR: Key [</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>] contains non-list value ([</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>])&#39;</span><span style=color:#f92672>.</span>format(
+</span></span><span style=display:flex><span>            key, value))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> return_value
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_increment</span>(key):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Return a tuple containing True if the key&#39;s value could be incremented
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    and the message to send back to the client.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    return_value <span style=color:#f92672>=</span> exists, value <span style=color:#f92672>=</span> handle_get(key)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> exists:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> return_value
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>elif</span> <span style=color:#f92672>not</span> isinstance(value, int):
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> (<span style=color:#66d9ef>False</span>, <span style=color:#e6db74>&#39;ERROR: Key [</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>] contains non-list value ([</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>])&#39;</span><span style=color:#f92672>.</span>format(
+</span></span><span style=display:flex><span>            key, value))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>        DATA[key] <span style=color:#f92672>=</span> value <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> (<span style=color:#66d9ef>True</span>, <span style=color:#e6db74>&#39;Key [</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>] incremented&#39;</span><span style=color:#f92672>.</span>format(key, value))
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_append</span>(key, value):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Return a tuple containing True if the key&#39;s value could be appended to
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    and the message to send back to the client.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    return_value <span style=color:#f92672>=</span> exists, list_value <span style=color:#f92672>=</span> handle_get(key)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> exists:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> return_value
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>elif</span> <span style=color:#f92672>not</span> isinstance(list_value, list):
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> (<span style=color:#66d9ef>False</span>, <span style=color:#e6db74>&#39;ERROR: Key [</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>] contains non-list value ([</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>])&#39;</span><span style=color:#f92672>.</span>format(
+</span></span><span style=display:flex><span>            key, list_value))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>        DATA[key]<span style=color:#f92672>.</span>append(value)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> (<span style=color:#66d9ef>True</span>, <span style=color:#e6db74>&#39;Key [</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>] had value [</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>] appended&#39;</span><span style=color:#f92672>.</span>format(key, value))
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_delete</span>(key):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Return a tuple containing True if the key could be deleted and the
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    message to send back to the client.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> key <span style=color:#f92672>not</span> <span style=color:#f92672>in</span> DATA:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> (
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>False</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;ERROR: Key [</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>] not found and could not be deleted.&#39;</span><span style=color:#f92672>.</span>format(key))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>del</span> DATA[key]
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> (<span style=color:#66d9ef>True</span>, <span style=color:#e6db74>&#39;Key [</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>] had deleted&#39;</span><span style=color:#f92672>.</span>format(key))
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>handle_stats</span>():
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;返回状态字典.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> (<span style=color:#66d9ef>True</span>, str(STATS))
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 查找表，将命令和处理命令关联</span>
+</span></span><span style=display:flex><span>COMMAND_HANDERS <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;PUT&#39;</span>: handle_put,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;GET&#39;</span>: handle_get,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;GETLIST&#39;</span>: handle_getlist,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;PUTLIST&#39;</span>: handle_putlist,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;INCREMENT&#39;</span>: handle_increment,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;APPEND&#39;</span>: handle_append,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;DELETE&#39;</span>: handle_delete,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;STATS&#39;</span>: handle_stats,
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>main</span>():
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;脚本主入口&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>    SOCKET<span style=color:#f92672>.</span>bind((HOST, PORT))
+</span></span><span style=display:flex><span>    SOCKET<span style=color:#f92672>.</span>listen(<span style=color:#ae81ff>1</span>)
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#39;Listening on </span><span style=color:#e6db74>{}</span><span style=color:#e6db74>&#39;</span><span style=color:#f92672>.</span>format((HOST, PORT)))
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> <span style=color:#ae81ff>1</span>:
+</span></span><span style=display:flex><span>        connection, address <span style=color:#f92672>=</span> SOCKET<span style=color:#f92672>.</span>accept()
+</span></span><span style=display:flex><span>        print(<span style=color:#e6db74>&#39;</span><span style=color:#e6db74>{}</span><span style=color:#e6db74> New connection from </span><span style=color:#e6db74>{}</span><span style=color:#e6db74>&#39;</span><span style=color:#f92672>.</span>format(
+</span></span><span style=display:flex><span>            time<span style=color:#f92672>.</span>strftime((<span style=color:#e6db74>&#34;%Y/%m/</span><span style=color:#e6db74>%d</span><span style=color:#e6db74> %H:%M:%S INFO&#34;</span>), time<span style=color:#f92672>.</span>localtime()),
+</span></span><span style=display:flex><span>            address))
+</span></span><span style=display:flex><span>        data <span style=color:#f92672>=</span> connection<span style=color:#f92672>.</span>recv(<span style=color:#ae81ff>4096</span>)<span style=color:#f92672>.</span>decode()
+</span></span><span style=display:flex><span>        command, key, value <span style=color:#f92672>=</span> parse_message(data)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> command <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;STATS&#39;</span>:
+</span></span><span style=display:flex><span>            response <span style=color:#f92672>=</span> handle_stats()
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>elif</span> command <span style=color:#f92672>in</span> (<span style=color:#e6db74>&#39;GET&#39;</span>, <span style=color:#e6db74>&#39;GETLIST&#39;</span>, <span style=color:#e6db74>&#39;INCREMENT&#39;</span>, <span style=color:#e6db74>&#39;DELETE&#39;</span>):
+</span></span><span style=display:flex><span>            response <span style=color:#f92672>=</span> COMMAND_HANDERS[command](key)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>elif</span> command <span style=color:#f92672>in</span> (
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#39;PUT&#39;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#39;PUTLIST&#39;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#39;APPEND&#39;</span>, ):
+</span></span><span style=display:flex><span>            response <span style=color:#f92672>=</span> COMMAND_HANDERS[command](key, value)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>            response <span style=color:#f92672>=</span> (<span style=color:#66d9ef>False</span>, <span style=color:#e6db74>&#39;Unknown command type </span><span style=color:#e6db74>{}</span><span style=color:#e6db74>&#39;</span><span style=color:#f92672>.</span>format(command))
+</span></span><span style=display:flex><span>        update_stats(command, response[<span style=color:#ae81ff>0</span>])
+</span></span><span style=display:flex><span>        data <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>{}</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#39;</span><span style=color:#f92672>.</span>format(response[<span style=color:#ae81ff>0</span>], response[<span style=color:#ae81ff>1</span>])
+</span></span><span style=display:flex><span>        connection<span style=color:#f92672>.</span>sendall(bytearray(data, <span style=color:#e6db74>&#39;utf-8&#39;</span>))
+</span></span><span style=display:flex><span>        connection<span style=color:#f92672>.</span>close()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;__main__&#39;</span>:
+</span></span><span style=display:flex><span>    main()
+</span></span></code></pre></div></div></article></main><footer class=footer><p>© 2026 Lizorn</p></footer></div></body></html>
