@@ -6,7 +6,7 @@
   <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
   <meta name="description" content="{{ .Params.description | default .Site.Params.description }}">
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚒️</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="/logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -14,9 +14,10 @@
   <div class="container">
     <header class="header">
       <nav class="nav">
-        <span class="nav-prompt">❯</span>
-        <span class="nav-sep">~</span>
-        <a class="site-title" href="{{ .Site.BaseURL }}">{{ .Site.Title }}</a>
+        <a class="brand" href="{{ "/" | relURL }}">
+          <img class="logo" src="/logo.svg" alt="" width="24" height="24">
+          <span class="brand-name">{{ .Site.Title }}</span>
+        </a>
         <span class="nav-links">
           {{ range .Site.Menus.main }}
             <a href="{{ .URL }}">{{ .Name }}</a>
@@ -28,7 +29,7 @@
       {{ block "main" . }}{{ end }}
     </main>
     <footer class="footer">
-      <p>© {{ now.Format "2006" }} {{ .Site.Params.author }}</p>
+      <p>© {{ now.Format "2006" }} {{ .Site.Params.author }}{{ with .Site.Params.motto }} · {{ . }}{{ end }}</p>
     </footer>
   </div>
 </body>

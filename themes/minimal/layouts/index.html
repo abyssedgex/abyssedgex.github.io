@@ -1,20 +1,100 @@
 {{ define "main" }}
 <section class="hero">
-  <div class="hero-brand">
-    <p class="hero-prompt">❯ cd ~/about</p>
-    <h1 class="hero-title">{{ .Site.Title }}</h1>
-    <p class="hero-subtitle">{{ .Site.Params.subtitle }}</p>
-    <p class="hero-desc">{{ .Site.Params.description }}</p>
-  </div>
+  <img class="hero-logo" src="/logo.svg" alt="山海炼物" width="88" height="88">
+  <p class="hero-prompt">❯ whoami</p>
+  <h1 class="hero-title">{{ .Site.Title }}</h1>
+  <p class="hero-subtitle">{{ .Site.Params.subtitle }}</p>
+  <p class="hero-motto">{{ .Site.Params.motto }}</p>
+  <p class="hero-desc">{{ .Site.Params.description }}</p>
   <div class="hero-links">
     <a href="https://x.com/AbyssEdgeX" target="_blank" rel="noopener" class="social-link">𝕏 Twitter</a>
-    <span class="social-link wechat-link" id="wechat-link">微信 WeChat</span>
     <a href="https://github.com/abyssedgex" target="_blank" rel="noopener" class="social-link">GitHub</a>
+    <a href="mailto:mail@lizorn.com" class="social-link">Email</a>
+    <span class="social-link wechat-link" id="wechat-link">微信 WeChat</span>
   </div>
   <div class="wechat-qr" id="wechat-qr" style="display:none;">
     <p>微信二维码（待上传）</p>
   </div>
 </section>
+
+<section class="pillars">
+  <div class="pillar">
+    <p class="pillar-index">01</p>
+    <h2 class="pillar-title">科技</h2>
+    <p class="pillar-desc">AI、工程与自动化。把技术当作认识世界的杠杆，而不是目的。</p>
+  </div>
+  <div class="pillar">
+    <p class="pillar-index">02</p>
+    <h2 class="pillar-title">金融</h2>
+    <p class="pillar-desc">交易、市场与商业。在不确定性中寻找结构、纪律与长期主义。</p>
+  </div>
+  <div class="pillar">
+    <p class="pillar-index">03</p>
+    <h2 class="pillar-title">艺术</h2>
+    <p class="pillar-desc">设计、写作与审美。为理性保留感受力，也为表达保留温度。</p>
+  </div>
+</section>
+
+<section class="section knowhow">
+  <p class="section-kicker">❯ cat know-how.md</p>
+  <h2 class="section-title">知识架构 · Know-how</h2>
+  <p class="knowhow-lead">AI 时代真正稀缺的，不是工具，而是架构知识的能力。</p>
+  <p class="knowhow-text">
+    我正在搭建一套围绕「知识架构」的课程体系：从问题出发，沉淀思考方式、方法论与可复用的知识文件；分享 AI 在科技、金融、艺术等领域的沉淀基石。摒弃对工具的追逐，让工具回归其位，把真正重要的东西留下来。
+  </p>
+  <div class="know-steps">
+    <div class="know-step">
+      <span class="step-no">01</span>
+      <h3>思考</h3>
+      <p>回到问题与第一性原理，先想清楚，再动手。</p>
+    </div>
+    <div class="know-step">
+      <span class="step-no">02</span>
+      <h3>方法论</h3>
+      <p>把经验提炼成可迁移、可验证的做事框架。</p>
+    </div>
+    <div class="know-step">
+      <span class="step-no">03</span>
+      <h3>知识文件</h3>
+      <p>结构化沉淀，让知识可检索、可复用、可生长。</p>
+    </div>
+  </div>
+  <p class="knowhow-note">课程体系筹备中 · 敬请期待</p>
+</section>
+
+<section class="section latest">
+  <div class="section-head">
+    <h2 class="section-title">最近写作</h2>
+    <a class="section-more" href="/posts/">全部文章 →</a>
+  </div>
+  <div class="home-posts">
+    {{ range first 5 (where .Site.RegularPages "Section" "posts").ByDate.Reverse }}
+    <a class="home-post" href="{{ .RelPermalink }}">
+      <time>{{ .Date.Format "2006-01-02" }}</time>
+      <span>{{ .Title }}</span>
+    </a>
+    {{ end }}
+  </div>
+</section>
+
+<section class="explore">
+  <a class="explore-card" href="/talks/">
+    <span class="explore-kicker">Talks</span>
+    <span class="explore-title">分享与演讲</span>
+    <span class="explore-desc">7 套 HTML 版 PPT，从区块链到硅谷之谜</span>
+  </a>
+  <a class="explore-card" href="/projects/">
+    <span class="explore-kicker">Projects</span>
+    <span class="explore-title">项目与作品</span>
+    <span class="explore-desc">自动化测试、数据平台与开源工具</span>
+  </a>
+  <a class="explore-card" href="/about/">
+    <span class="explore-kicker">About</span>
+    <span class="explore-title">关于我</span>
+    <span class="explore-desc">个人使命、经历与联系方式</span>
+  </a>
+</section>
+
 <script>
 document.getElementById('wechat-link')?.addEventListener('click', function(){
   var qr = document.getElementById('wechat-qr');

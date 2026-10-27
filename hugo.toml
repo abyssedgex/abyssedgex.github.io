@@ -4,8 +4,9 @@ title = '山海炼物'
 theme = 'minimal'
 
 [params]
-  description = '山海炼物 — 炼物成器，格物致知'
-  subtitle = 'Refining Ideas, Crafting Reality'
+  description = '炼物成器，格物致知。记录跨领域的思考、方法与可复用的知识。'
+  subtitle = '科技 · 金融 · 艺术 综合细胞体'
+  motto = '知而行之'
   author = 'Lizorn'
   twitter = 'https://x.com/AbyssEdgeX'
   wechat = ''

@@ -74,6 +74,7 @@ body {
 .nav-links {
   display: flex;
   gap: 4px;
+  margin-left: auto;
 }
 
 .nav-links a {
@@ -361,4 +362,313 @@ body {
   color: var(--fg-dim);
   font-size: 0.75rem;
   margin-top: 48px;
+}
+
+/* ── Brand / Logo ─────────────────────────────────────────── */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.brand .logo {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.brand-name {
+  color: var(--fg);
+  font-size: 0.95rem;
+}
+
+.brand:hover .brand-name {
+  color: var(--accent);
+}
+
+/* ── Home: hero logo & motto ──────────────────────────────── */
+
+.hero-logo {
+  width: 88px;
+  height: 88px;
+  display: block;
+  margin: 0 auto 20px;
+  filter: drop-shadow(0 0 18px rgba(16, 185, 129, 0.25));
+}
+
+.hero-motto {
+  font-size: 0.85rem;
+  letter-spacing: 0.35em;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+
+/* ── Home: pillars ────────────────────────────────────────── */
+
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: -20px 0 72px;
+}
+
+.pillar {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 22px 20px;
+}
+
+.pillar-index {
+  color: var(--accent-dim);
+  font-size: 0.75rem;
+  margin-bottom: 10px;
+}
+
+.pillar-title {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.pillar-desc {
+  color: var(--fg-dim);
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+/* ── Home: sections ───────────────────────────────────────── */
+
+.section {
+  margin: 0 0 72px;
+}
+
+.section-kicker {
+  color: var(--accent);
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 18px;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.section-head .section-title {
+  margin-bottom: 0;
+}
+
+.section-more {
+  color: var(--accent);
+  font-size: 0.8rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.section-more:hover {
+  text-decoration: underline;
+}
+
+/* ── Home: know-how ───────────────────────────────────────── */
+
+.knowhow {
+  background:
+    linear-gradient(180deg, rgba(16, 185, 129, 0.06), transparent 60%),
+    var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 32px 30px;
+}
+
+.knowhow-lead {
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+
+.knowhow-text {
+  color: var(--fg-dim);
+  font-size: 0.86rem;
+  line-height: 1.9;
+  margin-bottom: 26px;
+}
+
+.know-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.know-step h3 {
+  color: var(--accent);
+  font-size: 0.92rem;
+  margin-bottom: 6px;
+}
+
+.know-step p {
+  color: var(--fg-dim);
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.step-no {
+  display: block;
+  color: var(--fg-dim);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.knowhow-note {
+  color: var(--fg-dim);
+  font-size: 0.75rem;
+  margin-top: 24px;
+}
+
+.knowhow-note::before {
+  content: '// ';
+  color: var(--accent-dim);
+}
+
+/* ── Home: recent posts ───────────────────────────────────── */
+
+.home-posts {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-post {
+  display: flex;
+  gap: 20px;
+  align-items: baseline;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+}
+
+.home-post:last-child {
+  border-bottom: none;
+}
+
+.home-post time {
+  color: var(--fg-dim);
+  font-size: 0.78rem;
+  min-width: 88px;
+  flex-shrink: 0;
+}
+
+.home-post span {
+  color: var(--fg);
+  font-size: 0.88rem;
+}
+
+.home-post:hover span {
+  color: var(--accent);
+}
+
+/* ── Home: explore cards ──────────────────────────────────── */
+
+.explore {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.explore-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.explore-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.explore-kicker {
+  color: var(--accent);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.explore-title {
+  color: #fff;
+  font-size: 0.92rem;
+}
+
+.explore-desc {
+  color: var(--fg-dim);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+/* ── Mobile ───────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .header {
+    margin-bottom: 40px;
+  }
+
+  .nav {
+    gap: 10px;
+  }
+
+  .nav-links {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .hero {
+    padding: 32px 0 56px;
+  }
+
+  .hero-title {
+    font-size: 2.1rem;
+  }
+
+  .pillars,
+  .know-steps,
+  .explore {
+    grid-template-columns: 1fr;
+  }
+
+  .pillars {
+    margin-bottom: 56px;
+  }
+
+  .knowhow {
+    padding: 24px 20px;
+  }
+
+  .home-post {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .home-post time {
+    min-width: 0;
+  }
 }
