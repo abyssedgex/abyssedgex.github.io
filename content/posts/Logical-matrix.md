@@ -1,6 +1,7 @@
 ---
 title: "逻辑矩阵"
 date: 2019-01-27T10:42:00+08:00
+aliases: ["/2019/01/27/Logical-matrix/"]
 tags: ["逻辑思维"]
 categories: ["思维"]
 draft: false

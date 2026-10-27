@@ -1,6 +1,7 @@
 ---
 title: "键盘键位映射"
 date: 2016-11-01T08:21:30+08:00
+aliases: ["/2016/11/01/keymap/"]
 tags: ["keymap"]
 categories: ["杂货摊"]
 draft: false

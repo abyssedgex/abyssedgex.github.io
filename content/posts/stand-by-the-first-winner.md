@@ -1,6 +1,7 @@
 ---
 title: "站在秋末冬至的隘口"
 date: 2011-12-08T00:00:00+08:00
+aliases: ["/2011/12/08/stand-by-the-first-winner/"]
 tags: ["秋末冬至"]
 categories: ["诗歌"]
 draft: false

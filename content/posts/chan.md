@@ -1,6 +1,7 @@
 ---
 title: "禅"
 date: 2016-01-05T00:00:00+08:00
+aliases: ["/2016/01/05/chan/"]
 tags: ["禅", "精进"]
 categories: ["散文"]
 draft: false

@@ -1,6 +1,7 @@
 ---
 title: "穷爸爸富爸爸"
 date: 2016-06-14T00:00:00+08:00
+aliases: ["/2016/06/14/Rich-Dad-Poor-Dad/"]
 tags: ["博闻", "财富"]
 categories: ["读书笔记"]
 draft: false

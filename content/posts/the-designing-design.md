@@ -1,6 +1,7 @@
 ---
 title: "设计中的设计"
 date: 2018-04-22T16:13:01+08:00
+aliases: ["/2018/04/22/the-designing-design/"]
 tags: ["设计"]
 categories: ["读书笔记"]
 draft: false

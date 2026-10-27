@@ -1,6 +1,7 @@
 ---
 title: "区块链概述"
 date: 2018-05-11T14:14:00+08:00
+aliases: ["/2018/05/11/blockchain-introduce-1/"]
 tags: ["区块链", "blockchain"]
 categories: ["开发者手册"]
 draft: false

@@ -1,6 +1,7 @@
 ---
 title: "刑法"
 date: 2019-09-16T19:03:28+08:00
+aliases: ["/2019/09/16/subject-responsibility-of-the-crime/"]
 tags: ["司法"]
 categories: ["司法"]
 draft: false

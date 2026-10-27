@@ -1,6 +1,7 @@
 ---
 title: "Data Crush"
 date: 2016-02-15T00:00:00+08:00
+aliases: ["/2016/02/15/data_crush/"]
 tags: ["大数据", "新知"]
 categories: ["读书笔记"]
 draft: false

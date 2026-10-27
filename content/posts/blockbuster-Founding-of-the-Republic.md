@@ -1,6 +1,7 @@
 ---
 title: "建国大业"
 date: 2016-08-08T00:00:00+08:00
+aliases: ["/2016/08/08/blockbuster-Founding-of-the-Republic/"]
 tags: ["博闻", "传记", "毛泽东", "邓小平", "周恩来", "蒋介石"]
 categories: ["读书笔记"]
 draft: false

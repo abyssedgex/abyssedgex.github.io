@@ -1,6 +1,7 @@
 ---
 title: "我皮肤上的字"
 date: 2016-09-02T00:00:00+08:00
+aliases: ["/2016/09/02/the-words-on-my-skin/"]
 tags: ["翻译"]
 categories: ["小说"]
 draft: false

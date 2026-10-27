@@ -1,6 +1,7 @@
 ---
 title: "技术创新过程中的十大矛盾"
 date: 2019-01-02T22:55:00+08:00
+aliases: ["/2019/01/02/ten-contradictions-in-the-process-of-innovation/"]
 tags: ["鸡汤"]
 categories: ["创新"]
 draft: false

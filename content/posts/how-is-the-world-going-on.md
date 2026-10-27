@@ -1,6 +1,7 @@
 ---
 title: "互联网的下半场"
 date: 2019-07-30T19:13:11+08:00
+aliases: ["/2019/07/30/how-is-the-world-going-on/"]
 tags: ["杂文"]
 categories: ["杂文"]
 draft: false

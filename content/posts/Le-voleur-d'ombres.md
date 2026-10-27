@@ -1,6 +1,7 @@
 ---
 title: "偷影子的人"
 date: 2016-06-14T00:00:00+08:00
+aliases: ["/2016/06/14/Le-voleur-d'ombres/"]
 tags: ["消遣类", "成长"]
 categories: ["读书笔记"]
 draft: false

@@ -1,6 +1,7 @@
 ---
 title: "统计数字会说谎"
 date: 2016-03-12T00:00:00+08:00
+aliases: ["/2016/03/12/how-to-lie-with-stastics/"]
 tags: ["大数据", "新知"]
 categories: ["读书笔记"]
 draft: false

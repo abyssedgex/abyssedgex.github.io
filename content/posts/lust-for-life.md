@@ -1,6 +1,7 @@
 ---
 title: "渴望生活"
 date: 2016-08-09T00:00:00+08:00
+aliases: ["/2016/08/09/lust-for-life/"]
 tags: ["博闻", "梵高"]
 categories: ["读书笔记"]
 draft: false

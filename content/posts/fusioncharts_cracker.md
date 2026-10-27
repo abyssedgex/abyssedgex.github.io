@@ -1,6 +1,7 @@
 ---
 title: "FusionCharts Suite XT去水印"
 date: 2016-03-10T00:00:00+08:00
+aliases: ["/2016/03/10/fusioncharts_cracker/"]
 tags: ["FusionCharts"]
 categories: ["开发者手册"]
 draft: false

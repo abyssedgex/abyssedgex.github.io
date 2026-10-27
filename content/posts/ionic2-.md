@@ -1,6 +1,7 @@
 ---
 title: "IONIC2使用感想"
 date: 2016-09-22T00:00:00+08:00
+aliases: ["/2016/09/22/ionic2-/"]
 tags: ["Ionic", "移动开发", "混合开发"]
 categories: ["开发者手册"]
 draft: false

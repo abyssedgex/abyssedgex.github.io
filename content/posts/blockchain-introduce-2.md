@@ -1,6 +1,7 @@
 ---
 title: "区块链导论:以太坊（Ethereum）"
 date: 2018-05-22T14:30:00+08:00
+aliases: ["/2018/05/22/blockchain-introduce-2/"]
 tags: ["区块链", "blockchain", "Ethereum", "以太坊"]
 categories: ["开发者手册"]
 draft: false

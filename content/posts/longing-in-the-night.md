@@ -1,6 +1,7 @@
 ---
 title: "静夜思"
 date: 2017-10-11T14:28:01+08:00
+aliases: ["/2017/10/11/longing-in-the-night/"]
 tags: ["诗歌"]
 categories: ["码农的秘密花园"]
 draft: false

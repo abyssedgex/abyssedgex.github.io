@@ -1,6 +1,7 @@
 ---
 title: "Angularjs2 5分钟入门手册(ts)"
 date: 2016-06-06T00:00:00+08:00
+aliases: ["/2016/06/06/angularjs2-5-MINUTE-QUICKSTART/"]
 tags: ["前端", "Angularjs2"]
 categories: ["开发者手册"]
 draft: false

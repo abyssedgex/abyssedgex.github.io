@@ -1,6 +1,7 @@
 ---
 title: "木兰花·城上风光莺语乱"
 date: 2016-03-11T00:00:00+08:00
+aliases: ["/2016/03/11/songci-2/"]
 tags: ["赏析", "宋词三百首"]
 categories: ["宋词"]
 draft: false

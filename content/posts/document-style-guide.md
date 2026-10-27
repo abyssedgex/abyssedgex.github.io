@@ -1,6 +1,7 @@
 ---
 title: "中文技术文档写作规范"
 date: 2016-11-06T16:38:30+08:00
+aliases: ["/2016/11/06/document-style-guide/"]
 tags: ["写作规范"]
 categories: ["转"]
 draft: false

@@ -1,6 +1,7 @@
 ---
 title: "马太效应基模"
 date: 2019-01-15T16:24:00+08:00
+aliases: ["/2019/01/15/Matthew-Effect/"]
 tags: ["逻辑思维"]
 categories: ["思维"]
 draft: false

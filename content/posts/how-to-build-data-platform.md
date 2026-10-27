@@ -1,6 +1,7 @@
 ---
 title: "数据平台构建思路"
 date: 2017-05-23T15:50:48+08:00
+aliases: ["/2017/05/23/how-to-build-data-platform/"]
 tags: ["大数据", "hadoop"]
 categories: ["开发者手册"]
 draft: false

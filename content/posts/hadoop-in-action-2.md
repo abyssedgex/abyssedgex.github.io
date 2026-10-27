@@ -1,6 +1,7 @@
 ---
 title: "hadoop实战(二)"
 date: 2017-06-01T17:30:01+08:00
+aliases: ["/2017/06/01/hadoop-in-action-2/"]
 tags: ["大数据", "hadoop"]
 categories: ["开发者手册"]
 draft: false

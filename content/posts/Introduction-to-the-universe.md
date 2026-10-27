@@ -1,6 +1,7 @@
 ---
 title: "宇宙概论"
 date: 2019-01-31T17:35:44+08:00
+aliases: ["/2019/01/31/Introduction-to-the-universe/"]
 tags: ["宇宙"]
 categories: ["新知"]
 draft: false

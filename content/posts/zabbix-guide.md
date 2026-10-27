@@ -1,6 +1,7 @@
 ---
 title: "Zabbix使用指南"
 date: 2017-05-20T16:38:30+08:00
+aliases: ["/2017/05/20/zabbix-guide/"]
 tags: ["运维"]
 categories: ["开发者工具"]
 draft: false

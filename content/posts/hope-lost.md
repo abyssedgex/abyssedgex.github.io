@@ -1,6 +1,7 @@
 ---
 title: "绝望中的虚妄(2005)"
 date: 2005-10-05T00:00:00+08:00
+aliases: ["/2005/10/05/hope-lost/"]
 tags: ["虚妄", "咋念"]
 categories: ["随笔"]
 draft: false

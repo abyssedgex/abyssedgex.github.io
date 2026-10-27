@@ -1,6 +1,7 @@
 ---
 title: "Javascript精髓笔记"
 date: 2016-03-12T00:00:00+08:00
+aliases: ["/2016/03/12/the-good-parts-of-javascript/"]
 tags: ["前端", "Javascript"]
 categories: ["开发者手册"]
 draft: false

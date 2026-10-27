@@ -1,6 +1,7 @@
 ---
 title: "渔家傲·塞下秋来风景异"
 date: 2016-03-12T00:00:00+08:00
+aliases: ["/2016/03/12/songci-3/"]
 tags: ["赏析", "宋词三百首"]
 categories: ["宋词"]
 draft: false

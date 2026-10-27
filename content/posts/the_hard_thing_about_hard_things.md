@@ -1,6 +1,7 @@
 ---
 title: "创业维艰"
 date: 2016-02-24T00:00:00+08:00
+aliases: ["/2016/02/24/the_hard_thing_about_hard_things/"]
 tags: ["管理", "创业"]
 categories: ["读书笔记"]
 draft: false

@@ -1,6 +1,7 @@
 ---
 title: "土豆和碧月刀"
 date: 2009-03-09T00:00:00+08:00
+aliases: ["/2009/03/09/potato-killer/"]
 tags: ["古龙体"]
 categories: ["小说"]
 draft: false

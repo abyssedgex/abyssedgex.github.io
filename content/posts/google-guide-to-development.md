@@ -1,6 +1,7 @@
 ---
 title: "Google的职业生涯：技术开发指导(学生)"
 date: 2016-10-13T00:00:00+08:00
+aliases: ["/2016/10/13/google-guide-to-development/"]
 tags: ["新知类", "Google", "职业指导"]
 categories: ["开发者手册"]
 draft: false

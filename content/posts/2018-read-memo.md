@@ -1,6 +1,7 @@
 ---
 title: "2018读书笔记"
 date: 2019-01-06T16:33:00+08:00
+aliases: ["/2019/01/06/2018-read-memo/"]
 tags: ["读书"]
 categories: ["读书"]
 draft: false

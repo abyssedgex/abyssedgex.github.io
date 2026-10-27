@@ -1,6 +1,7 @@
 ---
 title: "vs code 使用指南"
 date: 2016-04-05T00:00:00+08:00
+aliases: ["/2016/04/05/visual-studio-code-user-manual/"]
 tags: ["IDE"]
 categories: ["开发者工具"]
 draft: false

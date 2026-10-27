@@ -1,6 +1,7 @@
 ---
 title: "区块链导论:以太坊DAPP（宠物店应用）"
 date: 2018-05-22T15:33:00+08:00
+aliases: ["/2018/05/22/blockchain-introduce-ethereum-pet-shop/"]
 tags: ["区块链", "blockchain", "Ethereum", "以太坊"]
 categories: ["开发者手册"]
 draft: false

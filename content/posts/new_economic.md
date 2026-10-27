@@ -1,6 +1,7 @@
 ---
 title: "智能化变革下的商业模式思考模型"
 date: 2018-12-30T16:38:00+08:00
+aliases: ["/2018/12/30/new_economic/"]
 tags: ["新零售"]
 categories: ["商业模式"]
 draft: false

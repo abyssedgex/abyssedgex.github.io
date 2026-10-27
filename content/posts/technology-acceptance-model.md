@@ -1,6 +1,7 @@
 ---
 title: "技术采用模型"
 date: 2019-01-03T15:25:00+08:00
+aliases: ["/2019/01/03/technology-acceptance-model/"]
 tags: ["思维"]
 categories: ["思维"]
 draft: false

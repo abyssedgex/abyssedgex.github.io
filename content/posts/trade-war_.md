@@ -1,6 +1,7 @@
 ---
 title: "中美贸易战感想"
 date: 2018-08-24T13:55:00+08:00
+aliases: ["/2018/08/24/trade-war_/"]
 tags: ["贸易战"]
 categories: ["随笔"]
 draft: false

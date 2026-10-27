@@ -1,6 +1,7 @@
 ---
 title: "ubuntu docker镜像问题"
 date: 2016-11-02T11:22:51+08:00
+aliases: ["/2016/11/02/docker-ubuntu-issue/"]
 tags: ["docker", "spacemacs", "emacs", "linux环境变量"]
 categories: ["开发者手册"]
 draft: false

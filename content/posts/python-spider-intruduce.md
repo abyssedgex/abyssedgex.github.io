@@ -1,6 +1,7 @@
 ---
 title: "python spider intruduce"
 date: 2018-05-22T16:55:00+08:00
+aliases: ["/2018/05/22/python-spider-intruduce/"]
 tags: ["爬虫", "python", "spider"]
 categories: ["开发者手册"]
 draft: false

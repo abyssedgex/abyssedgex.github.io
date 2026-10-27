@@ -1,6 +1,7 @@
 ---
 title: "代码的味道"
 date: 2016-10-25T20:44:06+08:00
+aliases: ["/2016/10/25/Taste-of-code/"]
 tags: ["新知类", "编码规则", "代码的味道"]
 categories: ["开发者手册"]
 draft: false

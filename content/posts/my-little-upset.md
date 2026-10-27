@@ -1,6 +1,7 @@
 ---
 title: "My little trouble"
 date: 2016-09-22T00:00:00+08:00
+aliases: ["/2016/09/22/my-little-upset/"]
 tags: []
 categories: ["随笔"]
 draft: false

@@ -1,6 +1,7 @@
 ---
 title: "阴雨.碎季.杂念"
 date: 2009-11-18T00:00:00+08:00
+aliases: ["/2009/11/18/my-essays-on/"]
 tags: ["随想"]
 categories: ["散文"]
 draft: false

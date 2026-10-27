@@ -1,6 +1,7 @@
 ---
 title: "Docker环境"
 date: 2016-10-27T11:03:37+08:00
+aliases: ["/2016/10/27/docker-developer-env/"]
 tags: ["开发环境", "docker", "docker base image", "hadoop", "spark", "tesoflow"]
 categories: ["开发者手册"]
 draft: false

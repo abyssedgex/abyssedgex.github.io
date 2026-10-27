@@ -1,6 +1,7 @@
 ---
 title: "Python&数据库"
 date: 2018-05-11T16:30:00+08:00
+aliases: ["/2018/05/11/python-database-develop/"]
 tags: ["数据库", "sql"]
 categories: ["开发者手册"]
 draft: false

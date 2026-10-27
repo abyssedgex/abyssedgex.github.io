@@ -1,6 +1,7 @@
 ---
 title: "Angularjs2教程:英雄之途"
 date: 2016-06-17T00:00:00+08:00
+aliases: ["/2016/06/17/angularjs2-TUTORIAL-TOUR-OF-HEROES/"]
 tags: ["Angularjs2"]
 categories: ["开发者手册"]
 draft: false

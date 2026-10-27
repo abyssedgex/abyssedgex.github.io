@@ -1,6 +1,7 @@
 ---
 title: "讲故事的人：斯皮尔伯格传"
 date: 2016-08-10T00:00:00+08:00
+aliases: ["/2016/08/10/Steven-Allan-Spielberg/"]
 tags: ["博闻", "电影"]
 categories: ["读书笔记"]
 draft: false

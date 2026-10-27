@@ -1,6 +1,7 @@
 ---
 title: "决战大数据"
 date: 2016-02-15T00:00:00+08:00
+aliases: ["/2016/02/15/big_data/"]
 tags: ["大数据", "新知"]
 categories: ["读书笔记"]
 draft: false

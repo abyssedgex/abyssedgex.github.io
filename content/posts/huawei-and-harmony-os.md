@@ -1,6 +1,7 @@
 ---
 title: "华为能破“鸿蒙”吗？"
 date: 2019-08-12T17:35:11+08:00
+aliases: ["/2019/08/12/huawei-and-harmony-os/"]
 tags: ["杂文"]
 categories: ["杂文"]
 draft: false

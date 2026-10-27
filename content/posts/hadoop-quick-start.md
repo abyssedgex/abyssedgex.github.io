@@ -1,6 +1,7 @@
 ---
 title: "hadoop快速入门"
 date: 2016-10-27T12:53:48+08:00
+aliases: ["/2016/10/27/hadoop-quick-start/"]
 tags: ["大数据", "hadoop"]
 categories: ["开发者手册"]
 draft: false

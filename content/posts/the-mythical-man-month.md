@@ -1,6 +1,7 @@
 ---
 title: "人月神话"
 date: 2016-03-06T00:00:00+08:00
+aliases: ["/2016/03/06/the-mythical-man-month/"]
 tags: ["项目管理"]
 categories: ["读书笔记"]
 draft: false

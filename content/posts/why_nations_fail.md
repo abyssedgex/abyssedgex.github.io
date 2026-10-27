@@ -1,6 +1,7 @@
 ---
 title: "国家为什么会失败"
 date: 2016-03-04T00:00:00+08:00
+aliases: ["/2016/03/04/why_nations_fail/"]
 tags: ["博闻", "国家"]
 categories: ["读书笔记"]
 draft: false

@@ -1,6 +1,7 @@
 ---
 title: "活着为了讲述"
 date: 2016-08-13T00:00:00+08:00
+aliases: ["/2016/08/13/vivir-para-contarla/"]
 tags: ["消遣", "百年孤独"]
 categories: ["读书笔记"]
 draft: false

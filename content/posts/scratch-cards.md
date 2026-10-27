@@ -1,6 +1,7 @@
 ---
 title: "Scratch编程卡片"
 date: 2018-12-29T16:38:00+08:00
+aliases: ["/2018/12/29/scratch-cards/"]
 tags: ["少儿编程", "scratch"]
 categories: ["少儿编程"]
 draft: false

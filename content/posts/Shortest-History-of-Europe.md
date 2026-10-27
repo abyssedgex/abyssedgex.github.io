@@ -1,6 +1,7 @@
 ---
 title: "极简欧洲史"
 date: 2016-06-30T00:00:00+08:00
+aliases: ["/2016/06/30/Shortest-History-of-Europe/"]
 tags: ["博闻"]
 categories: ["读书笔记"]
 draft: false

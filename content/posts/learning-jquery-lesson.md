@@ -1,6 +1,7 @@
 ---
 title: "jQuery基础"
 date: 2016-03-10T00:00:00+08:00
+aliases: ["/2016/03/10/learning-jquery-lesson/"]
 tags: ["jQuery"]
 categories: ["Javascript"]
 draft: false

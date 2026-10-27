@@ -1,6 +1,7 @@
 ---
 title: "Docker使用手册"
 date: 2016-09-27T00:00:00+08:00
+aliases: ["/2016/09/27/docker-manual/"]
 tags: ["新知", "开发环境", "Docker"]
 categories: ["开发者手册"]
 draft: false

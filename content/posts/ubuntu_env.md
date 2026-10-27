@@ -1,6 +1,7 @@
 ---
 title: "Ubuntu的爱"
 date: 2016-03-06T00:00:00+08:00
+aliases: ["/2016/03/06/ubuntu_env/"]
 tags: ["UBuntu", "开发环境"]
 categories: ["开发者手册"]
 draft: false

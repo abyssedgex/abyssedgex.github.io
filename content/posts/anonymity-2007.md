@@ -1,6 +1,7 @@
 ---
 title: "anonymity"
 date: 2007-05-16T00:00:00+08:00
+aliases: ["/2007/05/16/anonymity-2007/"]
 tags: ["咋念"]
 categories: ["随笔"]
 draft: false

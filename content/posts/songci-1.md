@@ -1,6 +1,7 @@
 ---
 title: "宴山亭·北行见杏花"
 date: 2016-03-10T00:00:00+08:00
+aliases: ["/2016/03/10/songci-1/"]
 tags: ["赏析", "宋词三百首"]
 categories: ["宋词"]
 draft: false

@@ -1,6 +1,7 @@
 ---
 title: "酒和茶"
 date: 2019-03-03T17:57:11+08:00
+aliases: ["/2019/03/03/tea-and-wine/"]
 tags: ["随笔"]
 categories: ["随笔"]
 draft: false
