@@ -14,7 +14,7 @@ theme = 'minimal'
   twitter = 'https://x.com/AbyssEdgeX'
   twitterHandle = '@AbyssEdgeX'
   github = 'https://github.com/abyssedgex'
-  ogImage = '/logo.png'
+  ogImage = '/og.png'
   wechat = ''
 
   # giscus 评论：在 https://giscus.app 填入仓库后，把 repoId / categoryId 抄到这里
